@@ -1,7 +1,11 @@
 package com.gas.mapper;
 
-import org.apache.ibatis.annotations.Mapper;
+import com.gas.entity.User;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
-@Mapper
-public class UserMapper {
+@Repository
+public interface UserMapper {
+    User queryUsername(String username);
+    int addManagerUser(@Param("user") User user);
 }

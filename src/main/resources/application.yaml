@@ -9,7 +9,8 @@ spring:
   datasource:
     #    数据库配置
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.3.102/gas?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&rewriteBatchedStatements=true
+#    url: jdbc:mysql://192.168.3.102/gas?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&rewriteBatchedStatements=true
+    url: jdbc:mysql://localhost/gas?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&rewriteBatchedStatements=true
     username: root
     password: root
     #    连接池配置
