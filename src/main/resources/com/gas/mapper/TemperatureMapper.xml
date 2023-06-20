@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gas.mapper.TemperatureMapper">
+    <resultMap id="temperatureMap" type="com.gas.entity.Temperature">
+        <id column="t_id" property="id"></id>
+        <result column="t_data" property="temperatureDate"></result>
+        <result column="t_indate" property="indate"></result>
+        <result column="t_device_id" property="deivceId"></result>
+    </resultMap>
+    <insert id="addTemperatureDateTest">
+        insert into temperature(t_data,t_indate,t_device_id) values (#{temperature.temperatureDate},#{temperature.indate},#{temperature.deivceId})
+    </insert>
+</mapper>

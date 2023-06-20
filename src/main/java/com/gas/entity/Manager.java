@@ -9,10 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
-    private int userId;
+public class Manager {
+    private int managerId;
     private String username;
     private String password;
-    private int userLevel;
+    private int managerLevel;
     private int accountStatus;
 }

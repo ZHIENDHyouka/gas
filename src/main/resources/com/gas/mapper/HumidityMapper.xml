@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gas.mapper.HumidityMapper">
+    <resultMap id="humidityMap" type="com.gas.entity.Humidity">
+        <id column="h_id" property="id"></id>
+        <result column="h_data" property="humidityDate"></result>
+        <result column="h_indate" property="indate"></result>
+        <result column="h_device_id" property="deviceId"></result>
+    </resultMap>
+    <insert id="addHumidityDateTest">
+        insert into humidity(h_data,h_indate,h_device_id) values (#{humidity.humidityDate},#{humidity.indate},#{humidity.deviceId})
+    </insert>
+</mapper>
