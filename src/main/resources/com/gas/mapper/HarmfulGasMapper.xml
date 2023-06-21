@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gas.mapper.HarmfulGasMapper">
+    <resultMap id="harmfulGasMap" type="com.gas.entity.HarmfulGas">
+        <id column="g_id" property="id"></id>
+        <result column="g_data" property="gasData"></result>
+        <result column="g_name" property="gasName"></result>
+        <result column="g_indate" property="indate"></result>
+        <result column="g_device_id" property="deviceId"></result>
+    </resultMap>
+
+    <insert id="addHarmfulGasDateTest">
+        insert into harmful_gas(g_name,g_data,g_indate,g_device_id) values (#{gas.gasName},#{gas.gasData},#{gas.indate},#{gas.deviceId})
+    </insert>
+</mapper>

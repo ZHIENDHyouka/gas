@@ -1,7 +1,9 @@
 package com.gas;
 
+import com.gas.entity.HarmfulGas;
 import com.gas.entity.Humidity;
 import com.gas.entity.Temperature;
+import com.gas.mapper.HarmfulGasMapper;
 import com.gas.mapper.HumidityMapper;
 import com.gas.mapper.TemperatureMapper;
 import org.apache.ibatis.session.ExecutorType;
@@ -25,19 +27,16 @@ import java.util.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class CreateGasData {
-//    @Autowired
-//    private TemperatureMapper temperatureMapper;
     @Autowired
     private SqlSessionFactory sqlSessionFactory;
     private  String deviceIdArr[]={"23BG-67TY-91KL","09TH-56RE-23FG","76FR-12GT-88HY","45UY-87JK-09DF","33RT-65FH-11DX",
             "54GB-28HN-94KL","87TH-06UY-77PL","22SI-09DG-63KJ","99RS-44UI-12RE","71HI-65OP-91KL"};
-
+    private String gasNameArr[] = {"PM2.5","PM10","SO2","NO2","CO","O3"};
     @Test
     public void createTempertureDate(){
         //批处理生成数据
-        List<Temperature> dateList = createTemperatureDateList(30000);
+        List<Temperature> dateList = createTemperatureDataList(30000);
         //使用批处理
-        long start = System.currentTimeMillis();
         SqlSession sqlSession = this.sqlSessionFactory.openSession(ExecutorType.BATCH, false);
         TemperatureMapper mapper = sqlSession.getMapper(TemperatureMapper.class);
         dateList.stream().forEach(temperature -> mapper.addTemperatureDateTest(temperature));
@@ -48,7 +47,7 @@ public class CreateGasData {
     @Test
     public void createHumidityDate(){
         //批处理生成数据
-        List<Humidity> dateList = createHumidityDateList(50000);
+        List<Humidity> dateList = createHumidityDataList(50000);
         //使用批处理
         SqlSession sqlSession = this.sqlSessionFactory.openSession(ExecutorType.BATCH, false);
         HumidityMapper mapper = sqlSession.getMapper(HumidityMapper.class);
@@ -56,8 +55,32 @@ public class CreateGasData {
         sqlSession.commit();
         sqlSession.clearCache();
     }
+    
+    @Test
+    public void createHarmfulGasData(){
+        List<HarmfulGas> harmfulGasDataList = createHarmfulGasDataList(50000);
+        //使用批处理
+        SqlSession sqlSession = this.sqlSessionFactory.openSession(ExecutorType.BATCH, false);
+        HarmfulGasMapper mapper = sqlSession.getMapper(HarmfulGasMapper.class);
+        harmfulGasDataList.stream().forEach(harmfulGas -> mapper.addHarmfulGasDateTest(harmfulGas));
+        sqlSession.commit();
+        sqlSession.clearCache();
+    }
 
-    private List<Humidity> createHumidityDateList(int n){
+    private List<HarmfulGas> createHarmfulGasDataList(int n){
+        ArrayList<HarmfulGas> harmfulGases = new ArrayList<>();
+        Random random = new Random();
+        for (int i = 0; i < n; i++) {
+            double data = random.nextDouble()*10;
+            DecimalFormat decimalFormat = new DecimalFormat("#.00");
+            data=Double.parseDouble(decimalFormat.format(data));
+            HarmfulGas harmfulGas = new HarmfulGas(0, gasNameArr[random.nextInt(6)], data, getDateTime(), deviceIdArr[random.nextInt(10)]);
+            harmfulGases.add(harmfulGas);
+        }
+        return harmfulGases;
+    }
+
+    private List<Humidity> createHumidityDataList(int n){
         ArrayList<Humidity> humidityList = new ArrayList<>();
         Random random = new Random();
         for (int i = 0; i < n; i++) {
@@ -70,7 +93,7 @@ public class CreateGasData {
         return humidityList;
     }
 
-    private List<Temperature> createTemperatureDateList(int n){
+    private List<Temperature> createTemperatureDataList(int n){
         ArrayList<Temperature> temperatureList = new ArrayList<>();
         Random random = new Random();
         for (int i = 0; i < n; i++) {
