@@ -9,11 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Manager {
-    //管理员
-    private int managerId;
+public class ManagerReview {
+    private int id;
     private String username;
     private String password;
-    private int managerLevel;
-    private int accountStatus;
+    private String indate;
+    private int status;
+    private String outdate;
 }

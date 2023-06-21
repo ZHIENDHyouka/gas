@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HarmfulGas {
+    //气体类
     private int id;
     private String gasName;
     private double gasData;
