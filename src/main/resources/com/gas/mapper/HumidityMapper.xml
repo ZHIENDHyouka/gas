@@ -12,4 +12,19 @@
     <insert id="addHumidityDateTest">
         insert into humidity(h_data,h_indate,h_device_id) values (#{humidity.humidityDate},#{humidity.indate},#{humidity.deviceId})
     </insert>
+    <select id="queryConditionData" resultMap="humidityMap">
+        select *
+        from humidity
+        <where>
+            <if test="''!=sdateTime and edateTime != ''">
+                h_indate BETWEEN #{sdateTime} and #{edateTime}
+            </if>
+            <if test="deviceId !=''">
+                and h_device_id = #{deviceId}
+            </if>
+            <if test="''!=sdateTime and edateTime != ''">
+                ORDER BY h_indate DESC
+            </if>
+        </where>;
+    </select>
 </mapper>

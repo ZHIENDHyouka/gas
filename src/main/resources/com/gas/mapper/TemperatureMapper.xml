@@ -15,4 +15,19 @@
     <select id="queryAllTemperatureInfo" resultMap="temperatureMap">
         select * from temperature ORDER BY t_indate desc
     </select>
+    <select id="queryConditionData" resultMap="temperatureMap">
+        select *
+        from temperature
+        <where>
+            <if test="''!=sdateTime and edateTime != ''">
+                t_indate BETWEEN #{sdateTime} and #{edateTime}
+            </if>
+            <if test="deviceId !=''">
+                and t_device_id = #{deviceId}
+            </if>
+            <if test="''!=sdateTime and edateTime != ''">
+                ORDER BY t_indate DESC
+            </if>
+        </where>;
+    </select>
 </mapper>

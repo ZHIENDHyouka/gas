@@ -14,4 +14,22 @@
     <insert id="addHarmfulGasDateTest">
         insert into harmful_gas(g_name,g_data,g_indate,g_device_id) values (#{gas.gasName},#{gas.gasData},#{gas.indate},#{gas.deviceId})
     </insert>
+    <select id="queryConditionData" resultMap="harmfulGasMap">
+        select *
+        from harmful_gas
+        <where>
+            <if test="''!=sdateTime and edateTime != ''">
+                g_indate BETWEEN #{sdateTime} and #{edateTime}
+            </if>
+            <if test="deviceId !=''">
+                and g_device_id = #{deviceId}
+            </if>
+            <if test="gas !=''">
+                and g_name=#{gas}
+            </if>
+            <if test="''!=sdateTime and edateTime != ''">
+                ORDER BY g_indate DESC
+            </if>
+        </where>;
+    </select>
 </mapper>

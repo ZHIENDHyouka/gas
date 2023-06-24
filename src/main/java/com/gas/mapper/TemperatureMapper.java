@@ -11,4 +11,5 @@ import java.util.List;
 public interface TemperatureMapper {
      int addTemperatureDateTest(@Param("temperature")Temperature temperature);
      List<Temperature> queryAllTemperatureInfo();
+     List<Temperature> queryConditionData(@Param("sdateTime")String startDateTime,@Param("edateTime")String endDateTime,@Param("deviceId")String deviceId);
 }
