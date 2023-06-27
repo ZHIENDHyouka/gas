@@ -9,6 +9,7 @@ import com.gas.mapper.HumidityMapper;
 import com.gas.mapper.TemperatureMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Transactional
 public class GasService {
     @Autowired
     private TemperatureMapper temperatureMapper;

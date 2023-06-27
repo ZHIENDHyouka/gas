@@ -6,6 +6,8 @@ import com.gas.service.ManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/user")
 @CrossOrigin
@@ -24,4 +26,21 @@ public class ManagerController {
         ResultVO resultVO = managerService.managerRegister(user);
         return resultVO;
     }
+
+    @GetMapping("/getAllManagerReviewList")
+    public ResultVO getAllManagerReviewList(){
+        return managerService.getAllManagerReviewList();
+    }
+
+    @PostMapping("/addManagerReview")
+    public ResultVO addManagerReview(@RequestBody Map<String,String> idMap){
+        return managerService.addManagerReview(idMap.get("id"));
+    }
+
+    @PostMapping("/refuseManagerReview")
+    public ResultVO refuseManagerReview(@RequestBody Map<String,String> idMap){
+        return managerService.refuseManagerReview(idMap.get("id"));
+    }
+
+
 }

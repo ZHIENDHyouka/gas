@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.gas.mapper.ManagerReviewMapper">
     <resultMap id="reviewMap" type="com.gas.entity.ManagerReview">
-        <id column="id" property="id"></id>
+        <id column="r_id" property="id"></id>
         <result column="username" property="username"></result>
         <result column="password" property="password"></result>
         <result column="r_indate" property="indate"></result>
@@ -12,7 +12,35 @@
         <result column="r_outdate" property="outdate"></result>
     </resultMap>
     <insert id="addReviewInfo">
-        insert into manager_review(username,password,r_indate,r_outdate)
-        values (#{review.username},#{review.password},#{review.indate},"");
+        insert into manager_review(username, password, r_indate, r_outdate)
+        values (#{review.username}, #{review.password}, #{review.indate}, "");
     </insert>
+
+    <update id="updateById">
+        update manager_review
+        set r_status=#{status},
+            r_outdate= #{date}
+        where r_id = #{id}
+    </update>
+
+    <select id="getAllManagerReviewList" resultMap="reviewMap">
+        select r_id,
+               username,
+               password,
+               r_indate,
+               r_status,
+               r_outdate
+        from manager_review
+
+    </select>
+    <select id="selectById" resultMap="reviewMap">
+        select r_id,
+               username,
+               password,
+               r_indate,
+               r_status,
+               r_outdate
+        from manager_review
+        where r_id = #{id}
+    </select>
 </mapper>
