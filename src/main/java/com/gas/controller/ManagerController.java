@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/manager")
 @CrossOrigin
 public class ManagerController {
     @Autowired
@@ -24,6 +24,24 @@ public class ManagerController {
     @PostMapping("/managerRegister")
     public ResultVO managerRegister(@RequestBody Manager user){
         ResultVO resultVO = managerService.managerRegister(user);
+        return resultVO;
+    }
+
+    @GetMapping("/getAllManagerInfo")
+    public ResultVO getAllManagerInfo(){
+        ResultVO allManagerInfo = managerService.getAllManagerInfo();
+        return allManagerInfo;
+    }
+
+    @GetMapping("/changeManagerAcountStatus")
+    public ResultVO changeManagerAcountStatus(@RequestParam("id")int id,@RequestParam("status")int status){
+        ResultVO resultVO = managerService.changeManagerAcountStatus(id, status);
+        return resultVO;
+    }
+
+    @PostMapping("/searchNameOrStatusData")
+    public ResultVO searchNameOrStatusData(@RequestBody Map<String,Object>searchMap){
+        ResultVO resultVO = managerService.searchNameOrStatusData(searchMap);
         return resultVO;
     }
 

@@ -15,8 +15,9 @@ import java.util.List;
 
 import static com.gas.utils.DateTimeUtil.DATETIMEFORMAT;
 
+import java.util.Map;
+
 @Service
-@Transactional
 public class ManagerService {
     @Autowired
     private ManagerMapper managerMapper;
@@ -29,20 +30,24 @@ public class ManagerService {
         String msg = "";
         int code = 0;
         String username = null;
-        if (manager != null) {
-            if (Md5Util.getMd5(user.getPassword()).equals(manager.getPassword())) {
-                //密码正确
-                msg = "登陆成功!";
-                code = 1;
-                username = manager.getUsername();
-            } else {
-                //密码错误
-                msg = "密码错误!";
+        if (manager!=null){
+            if (manager.getAccountStatus()==0){
+                msg="账号被禁用";
+            }else {
+                if (Md5Util.getMd5(user.getPassword()).equals(manager.getPassword())){
+                    //密码正确
+                    msg="登陆成功!";
+                    code=1;
+                    username=manager.getUsername();
+                }else {
+                    //密码错误
+                    msg="密码错误!";
+                }
             }
-        } else {
-            msg = "账号不存在!";
+        }else {
+            msg="账号不存在!";
         }
-        ResultVO resultVO = new ResultVO(code, username, msg);
+        ResultVO resultVO = new ResultVO(code,username,msg);
         return resultVO;
     }
 
@@ -63,6 +68,24 @@ public class ManagerService {
             msg = "用户名已经存在请更换用户名再注册申请!";
         }
         return new ResultVO(code, null, msg);
+    }
+
+    public ResultVO getAllManagerInfo(){
+        List<Manager> managers = managerMapper.queryAllManager();
+        return new ResultVO(1,managers,"获取成功");
+    }
+
+    public ResultVO changeManagerAcountStatus(int id,int status){
+        int i = managerMapper.updateAccountStatusById(id, status);
+        if (i>0) {
+           return new ResultVO(1,null,"修改成功!");
+        }else {
+            return new ResultVO(0,null,"修改失败!");
+        }
+    }
+
+    public ResultVO searchNameOrStatusData(Map<String,Object> map){
+        return null;
     }
 
     public ResultVO getAllManagerReviewList() {
