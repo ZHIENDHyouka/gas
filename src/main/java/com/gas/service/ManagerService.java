@@ -91,12 +91,12 @@ public class ManagerService {
     public ResultVO getAllManagerReviewList() {
         ResultVO resultVO = new ResultVO(0, null, "");
         List<ManagerReview> managerReviewList = reviewMapper.getAllManagerReviewList();
-        if (managerReviewList != null) {
+        if (managerReviewList.size()>0) {
             resultVO.setCode(1);
             resultVO.setMsg("查询成功");
             resultVO.setData(managerReviewList);
         } else {
-            resultVO.setMsg("查询失败，请联系管理员");
+            resultVO.setMsg("暂无数据");
         }
         return resultVO;
     }
