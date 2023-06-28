@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface ManagerMapper {
-    Manager queryUsername(String username);
+    Manager queryUsername(@Param("username") String username);
 
     int addManagerUser(@Param("manager") Manager user);
 
