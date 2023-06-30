@@ -15,4 +15,8 @@ public interface ManagerMapper {
     List<Manager> queryAllManager();
 
     int updateAccountStatusById(@Param("id")int id,@Param("status")int status);
+
+    List<Manager>queryLikeName(@Param("name")String name);
+
+    List<Manager>queryStatus(@Param("status") int status);
 }

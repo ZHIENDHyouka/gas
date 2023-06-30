@@ -85,7 +85,16 @@ public class ManagerService {
     }
 
     public ResultVO searchNameOrStatusData(Map<String,Object> map){
-        return null;
+        String type = map.get("type").toString();
+        String value = map.get("value").toString();
+        List<Manager> managers = null;
+        if ("1".equals(type)){
+            managers = managerMapper.queryLikeName(value);
+        }else if ("2".equals(type)){
+            managers = managerMapper.queryStatus(Integer.parseInt(value));
+//            managers = managerMapper.queryStatus(0);
+        }
+        return new ResultVO(0,managers,"");
     }
 
     public ResultVO getAllManagerReviewList() {

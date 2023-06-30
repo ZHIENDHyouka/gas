@@ -10,19 +10,32 @@
         <result column="manager_level" property="managerLevel"></result>
         <result column="account_status" property="accountStatus"></result>
     </resultMap>
+
     <insert id="addManagerUser">
         insert into manager(m_username,password,manager_level) values(#{manager.username},#{manager.password},1);
     </insert>
+
     <update id="updateAccountStatusById">
         update manager
         set account_status = #{status}
         where manager_id=#{id};
     </update>
+
     <select id="queryUsername" resultMap="managerMap">
         select * from `manager` where m_username=#{username};
     </select>
+
     <select id="queryAllManager" resultMap="managerMap">
         select manager_id,m_username,manager_level,account_status
         from manager ORDER BY manager_level asc;
+    </select>
+
+    <select id="queryLikeName" resultMap="managerMap">
+        select manager_id,m_username,manager_level,account_status
+        from manager where m_username like CONCAT('%',#{name},'%') ;
+    </select>
+    <select id="queryStatus" resultMap="managerMap">
+        select manager_id,m_username,manager_level,account_status
+        from manager where account_status = #{status};
     </select>
 </mapper>
