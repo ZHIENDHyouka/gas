@@ -11,4 +11,7 @@ public interface DeviceMapper {
     int addDeviceDataTest(@Param("device")Device device);
 
     List<Device> queryDeviceAllName();
+
+    int queryDeviceRunNumber();
+
 }

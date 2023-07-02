@@ -19,4 +19,10 @@ public class DeviceController {
     public ResultVO getDeviceNameList(){
         return deivceService.getDeviceNameList();
     }
+
+    @GetMapping("/getDeviceRunNumber")
+    public ResultVO getDeviceRunNumber(){
+        ResultVO deviceRunNumber = deivceService.getDeviceRunNumber();
+        return deviceRunNumber;
+    }
 }

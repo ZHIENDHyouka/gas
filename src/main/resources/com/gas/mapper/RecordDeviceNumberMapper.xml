@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gas.mapper.RecordDeviceNumberMapper">
+    <insert id="insertRecordNumberInfo">
+        insert into record_device_number(run_device_number,record_datetime)
+        values (#{number},#{datetime});
+    </insert>
+    <select id="querySevenHoursData" resultType="java.util.Map">
+        select * from record_device_number ORDER BY record_datetime desc LIMIT 0,7
+    </select>
+</mapper>

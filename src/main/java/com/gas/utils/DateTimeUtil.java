@@ -1,7 +1,9 @@
 package com.gas.utils;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 public class DateTimeUtil {
     public static final String  DATETIMEFORMAT = "yyyy-MM-dd HH:mm:ss";
@@ -17,4 +19,14 @@ public class DateTimeUtil {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern(format));
     }
 
+    public static String getLocalDateTimeFormat(LocalDateTime dateTime,String format){
+        String Format = dateTime.format(DateTimeFormatter.ofPattern(format));
+        return Format;
+    }
+
+    public static LocalDateTime stringTransformLocalDateTime(String datetime,String format){
+        DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
+        LocalDateTime ldt = LocalDateTime.parse(datetime,df);
+        return ldt;
+    }
 }

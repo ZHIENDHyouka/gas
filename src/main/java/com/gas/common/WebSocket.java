@@ -1,9 +1,14 @@
 package com.gas.common;
 
+import com.alibaba.fastjson2.JSON;
+import com.gas.mapper.DeviceMapper;
+import com.gas.mapper.RecordDeviceNumberMapper;
+import com.gas.utils.DateTimeUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +18,8 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 @ServerEndpoint(value = "/webSocket")//主要是将目前的类定义成一个websocket服务器端, 注解的值将被用于监听用户连接的终端访问URL地址,客户端可以通过这个URL来连接到WebSocket服务器端
@@ -38,6 +45,17 @@ public class WebSocket {
     public static void setWebSocketSet(CopyOnWriteArraySet<WebSocket> webSocketSet) {
         WebSocket.webSocketSet = webSocketSet;
     }
+
+    public RecordDeviceNumberMapper getRecordDeviceNumberMapper() {
+        RecordDeviceNumberMapper recordDeviceNumberMapper = SpringContext.getBean(RecordDeviceNumberMapper.class);
+        return recordDeviceNumberMapper;
+    }
+
+    public DeviceMapper getDeviceMapper() {
+        DeviceMapper deviceMapper = SpringContext.getBean(DeviceMapper.class);
+        return deviceMapper;
+    }
+
     /**
      * 连接建立成功调用的方法
      *
@@ -58,6 +76,7 @@ public class WebSocket {
     @OnMessage
     public void onMessage(String message, Session session) throws IOException {
         log.info("收到信息"+message);
+        this.updateDeviceNumber();
         //发消息
         for (WebSocket item : webSocketSet) {
             try {
@@ -112,6 +131,20 @@ public class WebSocket {
         log.info("信息:{}", message);
         for (WebSocket item : webSocketSet) {
             item.sendMessage(message);
+        }
+    }
+
+    private void updateDeviceNumber(){
+        try {
+            DeviceMapper deviceMapper = getDeviceMapper();
+            RecordDeviceNumberMapper recordDeviceNumberMapper = getRecordDeviceNumberMapper();
+            int number = deviceMapper.queryDeviceRunNumber();
+            int i = recordDeviceNumberMapper.insertRecordNumberInfo(number, DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT));
+            List<Map<String, Object>> maps = recordDeviceNumberMapper.querySevenHoursData();
+            String s = JSON.toJSONString(maps);
+            sendMessage(s);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
