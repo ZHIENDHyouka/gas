@@ -34,7 +34,7 @@ public class DeivceService {
     }
 
     public ResultVO getDeviceRunNumber(){
-        List<Map<String, Object>> maps = recordDeviceNumberMapper.querySevenHoursData();
+        List<Map<String, Object>> maps = recordDeviceNumberMapper.queryRealTimeData();
         ArrayList<Integer> runNumberList = new ArrayList<>();
         ArrayList<String> datatimeList = new ArrayList<>();
         String msg = "";
@@ -48,7 +48,7 @@ public class DeivceService {
                 datatimeList.add(datetime);
             }
         }else {
-            msg="暂无7小时内的数据!";
+            msg="暂无实时数据!";
         }
         HashMap<String, Object> result = new HashMap<>();
         result.put("y",runNumberList);

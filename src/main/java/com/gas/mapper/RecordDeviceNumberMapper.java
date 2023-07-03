@@ -12,6 +12,6 @@ public interface RecordDeviceNumberMapper {
     int insertRecordNumberInfo(@Param("number") Integer number, @Param("datetime")String dateTime);
 
     @MapKey("id")
-    List<Map<String,Object>> querySevenHoursData();
+    List<Map<String,Object>> queryRealTimeData();
 
 }

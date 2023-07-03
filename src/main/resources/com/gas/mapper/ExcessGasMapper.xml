@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gas.mapper.ExcessGasMapper">
+    <resultMap id="excessGasMap" type="com.gas.entity.ExcessGas">
+        <id column="e_id" property="id"></id>
+        <result column="gas_name" property="gasName"></result>
+        <result column="gas_type" property="gasType"></result>
+        <result column="indatetime" property="indatetime"></result>
+        <result column="gas_value" property="value"></result>
+        <result column="device_id" property="deviceId"></result>
+    </resultMap>
+    <insert id="insertAlarmGasInfo">
+        insert into excess_gas(gas_name,gas_type,indatetime,gas_value,device_id)
+        values (#{gas.gasName},#{gas.gasType},#{gas.indatetime},#{gas.value},#{gas.deviceId});
+    </insert>
+    <select id="queryRealTimeList" resultType="integer">
+        select count(e_id)
+        from excess_gas where indatetime>=#{beforeDateTime} &gt;= #{nowDateTime} &lt;= indatetime;
+    </select>
+</mapper>

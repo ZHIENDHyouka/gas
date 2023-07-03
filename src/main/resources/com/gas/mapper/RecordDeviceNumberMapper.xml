@@ -7,7 +7,7 @@
         insert into record_device_number(run_device_number,record_datetime)
         values (#{number},#{datetime});
     </insert>
-    <select id="querySevenHoursData" resultType="java.util.Map">
+    <select id="queryRealTimeData" resultType="java.util.Map">
         select * from record_device_number ORDER BY record_datetime desc LIMIT 0,7
     </select>
 </mapper>

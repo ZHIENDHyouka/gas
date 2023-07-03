@@ -1,8 +1,10 @@
 package com.gas.common;
 
 import com.alibaba.fastjson2.JSON;
+import com.gas.entity.ResultVO;
 import com.gas.mapper.DeviceMapper;
 import com.gas.mapper.RecordDeviceNumberMapper;
+import com.gas.service.DeivceService;
 import com.gas.utils.DateTimeUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +58,10 @@ public class WebSocket {
         return deviceMapper;
     }
 
+    public DeivceService getDeivceService(){
+        return SpringContext.getBean(DeivceService.class);
+    }
+
     /**
      * 连接建立成功调用的方法
      *
@@ -76,11 +82,16 @@ public class WebSocket {
     @OnMessage
     public void onMessage(String message, Session session) throws IOException {
         log.info("收到信息"+message);
-        this.updateDeviceNumber();
+        if ("1".equals(message)) {
+            //实时数据
+            this.updateDeviceNumber();
+        }
         //发消息
         for (WebSocket item : webSocketSet) {
             try {
-                item.sendMessage(message);
+                if (this==item) {
+                    item.sendMessage(message);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -139,9 +150,9 @@ public class WebSocket {
             DeviceMapper deviceMapper = getDeviceMapper();
             RecordDeviceNumberMapper recordDeviceNumberMapper = getRecordDeviceNumberMapper();
             int number = deviceMapper.queryDeviceRunNumber();
-            int i = recordDeviceNumberMapper.insertRecordNumberInfo(number, DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT));
-            List<Map<String, Object>> maps = recordDeviceNumberMapper.querySevenHoursData();
-            String s = JSON.toJSONString(maps);
+            recordDeviceNumberMapper.insertRecordNumberInfo(number, DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT));
+            ResultVO deviceRunNumber = getDeivceService().getDeviceRunNumber();
+            String s = JSON.toJSONString(deviceRunNumber);
             sendMessage(s);
         } catch (Exception e) {
             e.printStackTrace();
