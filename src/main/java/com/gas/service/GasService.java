@@ -1,9 +1,7 @@
 package com.gas.service;
 
-import com.gas.entity.HarmfulGas;
-import com.gas.entity.Humidity;
-import com.gas.entity.ResultVO;
-import com.gas.entity.Temperature;
+import com.gas.entity.*;
+import com.gas.mapper.ExcessGasMapper;
 import com.gas.mapper.HarmfulGasMapper;
 import com.gas.mapper.HumidityMapper;
 import com.gas.mapper.TemperatureMapper;
@@ -26,6 +24,9 @@ public class GasService {
     private HumidityMapper humidityMapper;
     @Autowired
     private HarmfulGasMapper harmfulGasMapper;
+
+    @Autowired
+    private ExcessGasMapper excessGasMapper;
     public ResultVO getConditionTableData(Map<String,Object> condition){
         //获取封装数据
         String gasName = condition.get("gas").toString();
@@ -49,6 +50,11 @@ public class GasService {
             List<Map<String, Object>> headList = getHumidityHeadList();
             result.put("headList",headList);
             result.put("dataList",dataList);
+        }else if("报警信息".equals(gasName)){
+            List<ExcessGas> dataList = excessGasMapper.queryConditionData(startDateTime, endDateTime, device);
+            List<Map<String, Object>> headList = getExcessGasHeadList();
+            result.put("headList",headList);
+            result.put("dataList",dataList);
         }else{
             if ("全部".equals(gasName)){
                 gasName = "";
@@ -59,6 +65,35 @@ public class GasService {
             result.put("dataList",dataList);
         }
         return new ResultVO(1,result,"");
+    }
+
+    private List<Map<String, Object>> getExcessGasHeadList() {
+        ArrayList<Map<String, Object>> headList = new ArrayList<>();
+        HashMap<String, Object> map1 = new HashMap<>();
+        map1.put("proper","id");
+        map1.put("label","记录编号");
+        HashMap<String, Object> map2 = new HashMap<>();
+        map2.put("proper","gasName");
+        map2.put("label","气体名称");
+        HashMap<String, Object> map3 = new HashMap<>();
+        map3.put("proper","gasType");
+        map3.put("label","类型");
+        HashMap<String, Object> map4 = new HashMap<>();
+        map4.put("proper","indatetime");
+        map4.put("label","记录时间");
+        HashMap<String, Object> map5 = new HashMap<>();
+        map5.put("proper","gasValue");
+        map5.put("label","数值");
+        HashMap<String, Object> map6 = new HashMap<>();
+        map5.put("proper","deviceId");
+        map5.put("label","记录设备编号");
+        headList.add(map1);
+        headList.add(map2);
+        headList.add(map3);
+        headList.add(map4);
+        headList.add(map5);
+        headList.add(map6);
+        return headList;
     }
 
     public ResultVO getAllTemperatureList(){

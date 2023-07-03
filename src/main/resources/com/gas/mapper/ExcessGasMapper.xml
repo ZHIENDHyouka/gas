@@ -19,4 +19,20 @@
         select count(e_id)
         from excess_gas where indatetime>=#{beforeDateTime} &gt;= #{nowDateTime} &lt;= indatetime;
     </select>
+
+    <select id="queryConditionData" resultMap="excessGasMap">
+        select *
+        from excess_gas
+        <where>
+            <if test="''!=startDateTime and endDateTime != ''">
+                indatetime BETWEEN #{startDateTime} and #{endDateTime}
+            </if>
+            <if test="deviceId !=''">
+                and device_id = #{deviceId}
+            </if>
+            <if test="''!=startDateTime and endDateTime != ''">
+                ORDER BY indatetime DESC
+            </if>
+        </where>;
+    </select>
 </mapper>

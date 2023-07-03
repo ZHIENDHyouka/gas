@@ -11,4 +11,6 @@ public interface ExcessGasMapper {
     int insertAlarmGasInfo(@Param("gas") ExcessGas excessGas);
 
     int queryRealTimeList(@Param("nowDateTime")String now,@Param("beforeDateTime")String before);
+
+    List<ExcessGas> queryConditionData(String startDateTime, String endDateTime, String deviceId);
 }
