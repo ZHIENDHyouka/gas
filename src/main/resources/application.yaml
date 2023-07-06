@@ -12,7 +12,7 @@ spring:
 #    url: jdbc:mysql://192.168.3.102/gas?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&rewriteBatchedStatements=true
     url: jdbc:mysql://localhost/gas?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&rewriteBatchedStatements=true
     username: root
-    password: root
+    password: heyufeng
     #    连接池配置
     type: com.zaxxer.hikari.HikariDataSource
     hikari:

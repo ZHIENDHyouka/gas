@@ -1,5 +1,7 @@
 package com.gas;
 
+import com.alibaba.fastjson2.JSONArray;
+import com.gas.entity.ExcessGas;
 import com.gas.entity.Temperature;
 import com.gas.mapper.TemperatureMapper;
 import com.gas.mapper.TestMapper;
@@ -27,7 +29,6 @@ public class MapperTest {
     }
     @Test
     public void test1(){
-        int i = testMapper.updateById(11);
-        System.out.println(i);
     }
+
 }

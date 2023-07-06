@@ -26,4 +26,10 @@ public class GasController {
         return conditionTableData;
     }
 
+    @PostMapping("/download")
+    public ResultVO download(@RequestBody Map<String,Object> condition){
+        ResultVO result = gasService.download(condition);
+        return result;
+    }
+
 }
