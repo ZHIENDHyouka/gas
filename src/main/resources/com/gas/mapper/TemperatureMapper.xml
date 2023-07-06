@@ -30,4 +30,9 @@
             </if>
         </where>;
     </select>
+    <select id="queryRealTimeTemperatureByDeviceId" resultMap="temperatureMap">
+        select t_id,t_data
+        from temperature where t_device_id = #{deviceId}
+        ORDER BY t_indate desc LIMIT 0,1
+    </select>
 </mapper>

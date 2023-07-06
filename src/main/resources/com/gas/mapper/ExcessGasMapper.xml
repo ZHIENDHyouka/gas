@@ -13,11 +13,11 @@
     </resultMap>
     <insert id="insertAlarmGasInfo">
         insert into excess_gas(gas_name,gas_type,indatetime,gas_value,device_id)
-        values (#{gas.gasName},#{gas.gasType},#{gas.indatetime},#{gas.value},#{gas.deviceId});
+        values (#{gas.gasName},#{gas.gasType},#{gas.indatetime},#{gas.value},#{gas.deviceId})
     </insert>
-    <select id="queryRealTimeList" resultType="integer">
+    <select id="queryRealTimeNumber" resultType="integer">
         select count(e_id)
-        from excess_gas where indatetime>=#{beforeDateTime} &gt;= #{nowDateTime} &lt;= indatetime;
+        from excess_gas where indatetime &gt; #{beforeDateTime} and indatetime &lt;= #{nowDateTime}
     </select>
 
     <select id="queryConditionData" resultMap="excessGasMap">
@@ -34,5 +34,9 @@
                 ORDER BY indatetime DESC
             </if>
         </where>;
+    </select>
+    <select id="queryRealTimeAlarmDataList" resultType="java.util.Map">
+        SELECT indatetime,count(e_id) number
+        FROM excess_gas GROUP BY indatetime ORDER BY indatetime desc LIMIT 0,7
     </select>
 </mapper>

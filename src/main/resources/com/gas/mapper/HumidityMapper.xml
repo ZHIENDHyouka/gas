@@ -27,4 +27,9 @@
             </if>
         </where>;
     </select>
+    <select id="queryRealTimeHumidityByDeviceId" resultMap="humidityMap">
+        select h_id,h_data
+        from humidity where h_device_id = #{deviceId}
+        ORDER BY h_indate desc LIMIT 0,1
+    </select>
 </mapper>

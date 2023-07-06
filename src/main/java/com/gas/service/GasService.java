@@ -8,6 +8,7 @@ import com.gas.mapper.ExcessGasMapper;
 import com.gas.mapper.HarmfulGasMapper;
 import com.gas.mapper.HumidityMapper;
 import com.gas.mapper.TemperatureMapper;
+import com.gas.utils.DateTimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -231,5 +233,37 @@ public class GasService {
             boolean mkdir = file.getParentFile().mkdir();
         }
         EasyExcel.write(file, clazz).sheet(describe).doWrite(list);
+    }
+
+    public ResultVO queryHarmfulGasAvgData(){
+        String gasNameArr[] = {"PM2.5","PM10","SO2","NO2","CO","O3"};
+        String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
+        ArrayList<Map<String, Object>> resultList = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            LocalDateTime localDateTime = DateTimeUtil.stringTransformLocalDateTime(now, DateTimeUtil.DATETIMEFORMAT);
+            String localDateTimeFormat = DateTimeUtil.getLocalDateTimeFormat(localDateTime.minusSeconds(2), DateTimeUtil.DATETIMEFORMAT);
+            List<Map<String, Object>> maps = harmfulGasMapper.queryHarmfulGasAvgData(localDateTimeFormat, now);
+            now=localDateTimeFormat;
+            HashMap<String, Object> mapResult = new HashMap<>();
+            if (maps.size()!= gasNameArr.length) {
+                ArrayList<String> strings = new ArrayList<>();
+                for (Map map : maps) {
+                    String gasName = map.get("gasName").toString();
+                    strings.add(gasName);
+                }
+                for (int j = 0; j < gasNameArr.length; j++) {
+                    if (!strings.contains(gasNameArr[j])) {
+                        HashMap<String, Object> map = new HashMap<>();
+                        map.put("avg", 0);
+                        map.put("gasName", gasNameArr[j]);
+                        maps.add(map);
+                    }
+                }
+            }
+            mapResult.put("data",maps);
+            mapResult.put("datetime",now.split(" ")[1]);
+            resultList.add(mapResult);
+        }
+        return new ResultVO(1,resultList,"");
     }
 }

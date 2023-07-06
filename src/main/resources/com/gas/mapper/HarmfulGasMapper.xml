@@ -32,4 +32,13 @@
             </if>
         </where>;
     </select>
+    <select id="queryRealTimeHarmfulGas" resultType="java.util.Map">
+        SELECT round(avg(g_data),2) as data,g_name as gasName FROM harmful_gas
+        where g_indate&gt;#{start} and g_indate	&lt;= #{end} and g_device_id=#{deviceId}
+        GROUP BY g_name
+    </select>
+    <select id="queryHarmfulGasAvgData" resultMap="harmfulGasMap">
+        SELECT round(avg(g_data),2) as avg,g_name from harmful_gas WHERE
+        g_indate &gt;#{start} and g_indate &lt;=#{end} GROUP BY g_name
+    </select>
 </mapper>

@@ -19,11 +19,23 @@ public class DateTimeUtil {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern(format));
     }
 
+    /**
+     * localdate类型转String
+     * @param dateTime
+     * @param format
+     * @return
+     */
     public static String getLocalDateTimeFormat(LocalDateTime dateTime,String format){
         String Format = dateTime.format(DateTimeFormatter.ofPattern(format));
         return Format;
     }
 
+    /**
+     * String转localdate类型
+     * @param datetime
+     * @param format
+     * @return
+     */
     public static LocalDateTime stringTransformLocalDateTime(String datetime,String format){
         DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
         LocalDateTime ldt = LocalDateTime.parse(datetime,df);

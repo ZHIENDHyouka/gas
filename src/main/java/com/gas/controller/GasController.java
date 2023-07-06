@@ -32,4 +32,9 @@ public class GasController {
         return result;
     }
 
+    @GetMapping("/getHarmfulGasAvgData")
+    public ResultVO queryHarmfulGasAvgData(){
+        return gasService.queryHarmfulGasAvgData();
+    }
+
 }
