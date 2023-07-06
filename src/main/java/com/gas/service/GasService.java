@@ -1,6 +1,7 @@
 package com.gas.service;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.gas.entity.*;
 import com.gas.mapper.ExcessGasMapper;
@@ -10,9 +11,11 @@ import com.gas.mapper.TemperatureMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +34,9 @@ public class GasService {
 
     @Autowired
     private ExcessGasMapper excessGasMapper;
+
+    @Value("${gas.download.path}")
+    private String path;
 
     public ResultVO getConditionTableData(Map<String, Object> condition) {
         //获取封装数据
@@ -182,44 +188,48 @@ public class GasService {
 
     public ResultVO download(Map<String, Object> condition) {
 
+        ResultVO resultVO = new ResultVO(0, null, "");
+
         Integer number = Integer.valueOf(condition.get("number").toString());
         String gasName = condition.get("gas").toString();
-
+        String data = JSON.toJSONString(condition.get("data"));
         log.info("需要导出数据条数：{}", number);
         log.info("需要导出数据类型：{}", gasName);
         if ("温度".equals(gasName)) {
-            List<Temperature> temperatureAll = (List<Temperature>) condition.get("data");
+            List<Temperature> temperatureAll = JSON.parseArray(data, Temperature.class);
             List<Temperature> temperatures = temperatureAll.subList(0, number);
             String fileName = "Temperature.xlsx";
-            downloadToExcel(fileName,Temperature.class,"温度信息",temperatures);
+            downloadToExcel(fileName, Temperature.class, "温度信息", temperatures);
+            resultVO.setCode(1);
         } else if ("湿度".equals(gasName)) {
-            List<Humidity> humidityAll = (List<Humidity>) condition.get("data");
+            List<Humidity> humidityAll = JSON.parseArray(data, Humidity.class);
             List<Humidity> humiditys = humidityAll.subList(0, number);
             String fileName = "Humidity.xlsx";
-            //导出方法
-            EasyExcel.write("d:/"+fileName, Humidity.class).sheet("报警信息").doWrite(humiditys);
-
-            // downloadToExcel(fileName,Humidity.class,"湿度信息",humiditys);
+            downloadToExcel(fileName, Humidity.class, "湿度信息", humiditys);
+            resultVO.setCode(1);
         } else if ("报警信息".equals(gasName)) {
-            // List<ExcessGas> excessGasAll = JSONArray.parseArray(data, ExcessGas.class);
-            List<ExcessGas> excessGasAll = (List<ExcessGas>) condition.get("data");
+            List<ExcessGas> excessGasAll = JSONArray.parseArray(data, ExcessGas.class);
             List<ExcessGas> excessGases = excessGasAll.subList(0, number);
             String fileName = "ExcessGas.xlsx";
-            //另一种方法
-            EasyExcel.write("d:/"+fileName, ExcessGas.class).sheet("报警信息").doWrite(()->{
-                return excessGases;
-            });
-            // downloadToExcel(fileName,ExcessGas.class,"报警信息",excessGases);
+            downloadToExcel(fileName, ExcessGas.class, "报警信息", excessGases);
+            resultVO.setCode(1);
         } else {
-            List<HarmfulGas> harmfulGasAll = (List<HarmfulGas>) condition.get("data");
+            List<HarmfulGas> harmfulGasAll = JSONArray.parseArray(data, HarmfulGas.class);
             List<HarmfulGas> harmfulGases = harmfulGasAll.subList(0, number);
             String fileName = "HarmfulGas.xlsx";
-            downloadToExcel(fileName,HarmfulGas.class,"有害气体信息",harmfulGases);
+            downloadToExcel(fileName, HarmfulGas.class, "有害气体信息", harmfulGases);
+            resultVO.setCode(1);
         }
-        return new ResultVO(1, null, "");
+        return resultVO;
     }
 
     private void downloadToExcel(String fileName, Class<?> clazz, String describe, List<?> list) {
 
+        String rootPath = path +System.currentTimeMillis()+fileName;
+        File file = new File(rootPath);
+        if(!file.getParentFile().exists()){
+            boolean mkdir = file.getParentFile().mkdir();
+        }
+        EasyExcel.write(file, clazz).sheet(describe).doWrite(list);
     }
 }

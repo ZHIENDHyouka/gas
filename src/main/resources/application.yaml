@@ -25,3 +25,6 @@ spring:
       max-lifetime: 3000000 #连接最大存活时间,默认值30分钟.设置应该比mysql设置的超时时间短
 
 
+gas:
+  download:
+    path: "d:/gas/"
