@@ -11,6 +11,9 @@
     <insert id="addDeviceDataTest">
         insert into device(d_name) VALUES(#{device.deviceName})
     </insert>
+    <update id="updateDeviceState">
+        update device set d_status=#{state} where d_id=#{serviceId}
+    </update>
 
     <select id="queryDeviceAllName" resultMap="deviceMap">
         select d_name from device;
@@ -18,4 +21,8 @@
     <select id="queryDeviceRunNumber" resultType="java.lang.Integer">
         SELECT count(d_id) from device where d_status=1
     </select>
+    <select id="getAllDeviceInfo" resultMap="deviceMap">
+        select * from device
+    </select>
+
 </mapper>

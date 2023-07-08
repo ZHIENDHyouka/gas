@@ -14,4 +14,7 @@ public interface DeviceMapper {
 
     int queryDeviceRunNumber();
 
+    List<Device> getAllDeviceInfo();
+
+    void updateDeviceState(Integer state, Integer serviceId);
 }

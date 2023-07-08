@@ -3,10 +3,9 @@ package com.gas.controller;
 import com.gas.entity.ResultVO;
 import com.gas.service.DeivceService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/device")
@@ -24,5 +23,17 @@ public class DeviceController {
     public ResultVO getDeviceRunNumber(){
         ResultVO deviceRunNumber = deivceService.getDeviceRunNumber();
         return deviceRunNumber;
+    }
+
+    @GetMapping("/getAllDeviceInfo")
+    public ResultVO getAllDeviceInfo(){
+        ResultVO allDevice = deivceService.getAllDeviceInfo();
+        return allDevice;
+    }
+
+    @PostMapping("/updateDeviceState")
+    public ResultVO updateDeviceState(@RequestBody Map<String,Integer> message){
+        ResultVO result =deivceService.updateDeviceState(message);
+        return result;
     }
 }

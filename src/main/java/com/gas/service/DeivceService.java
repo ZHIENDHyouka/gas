@@ -57,4 +57,17 @@ public class DeivceService {
     }
 
 
+    public ResultVO getAllDeviceInfo() {
+        List<Device> allDevice = deviceMapper.getAllDeviceInfo();
+        return new ResultVO(1, allDevice, "");
+    }
+
+    public ResultVO updateDeviceState(Map<String, Integer> message) {
+        ResultVO result = new ResultVO(0, null, "");
+        Integer state = message.get("state");
+        Integer serviceId = message.get("serviceId");
+        deviceMapper.updateDeviceState(state,serviceId);
+        result.setCode(1);
+        return result;
+    }
 }
