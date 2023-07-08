@@ -102,7 +102,7 @@ public class WebSocket {
 //        log.info("收到信息"+message);
         if ("1".equals(message)) {
             HashMap<String, Object> sendMap = new HashMap<>();
-            //实时数据
+            //实时图表数据
             String deviceNumberData = this.updateDeviceNumber();
             String alarmInfoData = this.updateAlarmInfoNumber();
             String temperatureData = this.updateTemperatureData();
@@ -114,6 +114,9 @@ public class WebSocket {
             sendMap.put("humidityData",humidityData);
             sendMap.put("HarmfulGasData",HarmfulGasData);
             sendMessage(JSON.toJSONString(sendMap));
+        }else if ("2".equals(message)){
+            //报警信息数量
+
         }
 //        this.sendMessage(message);
 //        for (WebSocket item : webSocketSet) {
@@ -233,10 +236,14 @@ public class WebSocket {
     private String updateHarmfulGas(){
         String id= "22SI-09DG-63KJ";
         CreateDataUtils.createHarmFulGas(50);
+        String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
         List<Map<String, Object>> maps = getHarmfulGasMapper().queryRealTimeHarmfulGas(
                 DateTimeUtil.getLocalDateTimeFormat(LocalDateTime.now().minusSeconds(2), DateTimeUtil.DATETIMEFORMAT),
-                DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT),
+                now,
                 id);
-        return JSON.toJSONString(maps);
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("data",maps);
+        result.put("datetime",now.split(" ")[1]);
+        return JSON.toJSONString(result);
     }
 }

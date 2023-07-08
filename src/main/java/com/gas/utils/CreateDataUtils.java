@@ -30,7 +30,7 @@ public class CreateDataUtils {
         ArrayList<ExcessGas> excessGasList = new ArrayList<>();
         Random random = new Random();
         for (int i = 0; i < n; i++) {
-            DecimalFormat decimalFormat = new DecimalFormat("#.00");
+            DecimalFormat decimalFormat = new DecimalFormat("0.00");
             ExcessGas gas = new ExcessGas(0, gasNameArr[random.nextInt(6)],
                     decimalFormat.format(random.nextDouble() * 10),
                     "有害气体",

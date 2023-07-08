@@ -241,7 +241,8 @@ public class GasService {
         ArrayList<Map<String, Object>> resultList = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             LocalDateTime localDateTime = DateTimeUtil.stringTransformLocalDateTime(now, DateTimeUtil.DATETIMEFORMAT);
-            String localDateTimeFormat = DateTimeUtil.getLocalDateTimeFormat(localDateTime.minusSeconds(2), DateTimeUtil.DATETIMEFORMAT);
+            String localDateTimeFormat = DateTimeUtil.getLocalDateTimeFormat(localDateTime.minusSeconds(10), DateTimeUtil.DATETIMEFORMAT);
+            now = DateTimeUtil.getLocalDateTimeFormat(localDateTime.minusSeconds(8), DateTimeUtil.DATETIMEFORMAT);
             List<Map<String, Object>> maps = harmfulGasMapper.queryHarmfulGasAvgData(localDateTimeFormat, now);
             now=localDateTimeFormat;
             HashMap<String, Object> mapResult = new HashMap<>();

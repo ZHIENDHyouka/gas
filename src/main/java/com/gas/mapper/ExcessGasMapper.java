@@ -18,4 +18,8 @@ public interface ExcessGasMapper {
 
     @MapKey("id")
     List<Map<String,Object>> queryRealTimeAlarmDataList();
+
+    int queryDayAllAlarmNumber(@Param("datetime")String datetime);
+
+    List<ExcessGas> queryDayAllAlarmData(@Param("datetime")String datetime);
 }
