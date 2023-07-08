@@ -42,7 +42,8 @@
     <select id="queryDayAllAlarmNumber" resultType="java.lang.Integer">
         SELECT count(e_id) FROM `excess_gas` WHERE indatetime>=#{datetime}
     </select>
-    <select id="queryDayAllAlarmData" resultType="com.gas.entity.ExcessGas">
-
+    <select id="queryDayAllAlarmData" resultMap="excessGasMap">
+        select *
+        from excess_gas  WHERE indatetime>=#{datetime} ORDER BY indatetime desc;
     </select>
 </mapper>

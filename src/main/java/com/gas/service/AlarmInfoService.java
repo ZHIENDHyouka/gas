@@ -1,7 +1,9 @@
 package com.gas.service;
 
+import com.gas.entity.ExcessGas;
 import com.gas.entity.ResultVO;
 import com.gas.mapper.ExcessGasMapper;
+import com.gas.utils.DateTimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,5 +34,13 @@ public class AlarmInfoService {
             result.put("valueList",valueList);
         }
         return new ResultVO(code,result,msg);
+    }
+
+    public ResultVO getDayAllAlarmInfo(){
+        String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
+        String date = now.split(" ")[0];
+        date += " 00:00:00";
+        List<ExcessGas> excessGases = excessGasMapper.queryDayAllAlarmData(date);
+        return new ResultVO(1,excessGases,"");
     }
 }

@@ -100,7 +100,9 @@ public class WebSocket {
     @OnMessage
     public void onMessage(String message, Session session) throws IOException {
 //        log.info("收到信息"+message);
-        if ("1".equals(message)) {
+        Map map = JSON.parseObject(message, Map.class);
+        String code = map.get("code").toString();
+        if ("1".equals(code)) {
             HashMap<String, Object> sendMap = new HashMap<>();
             //实时图表数据
             String deviceNumberData = this.updateDeviceNumber();
@@ -108,15 +110,34 @@ public class WebSocket {
             String temperatureData = this.updateTemperatureData();
             String humidityData = this.updateHumidityData();
             String HarmfulGasData = this.updateHarmfulGas();
+            sendMap.put("code",1);
             sendMap.put("deviceNumberData",deviceNumberData);
             sendMap.put("alarmInfoData",alarmInfoData);
             sendMap.put("temperatureData",temperatureData);
             sendMap.put("humidityData",humidityData);
             sendMap.put("HarmfulGasData",HarmfulGasData);
             sendMessage(JSON.toJSONString(sendMap));
-        }else if ("2".equals(message)){
+        }else if ("2".equals(code)){
             //报警信息数量
-
+            HashMap<String, Object> result = new HashMap<>();
+            String alarmNumber = this.updateDayAlarmInfoNumber();
+            if (!"0".equals(alarmNumber)) {
+                result.put("code", 2);
+                result.put("alarmNumber", alarmNumber);
+                sendMessage(JSON.toJSONString(result));
+            }
+        }else if ("3".equals(code)){
+            Integer number = (Integer) map.get("data");
+            String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
+            String date = now.split(" ")[0];
+            date += " 00:00:00";
+            List<ExcessGas> excessGases = getExcessGasMapper().queryDayAllAlarmData(date);
+            HashMap<String, Object> result = new HashMap<>();
+            if (!(number==excessGases.size())){
+                result.put("code",3);
+                result.put("data",excessGases);
+                sendMessage(JSON.toJSONString(result));
+            }
         }
 //        this.sendMessage(message);
 //        for (WebSocket item : webSocketSet) {
@@ -245,5 +266,13 @@ public class WebSocket {
         result.put("data",maps);
         result.put("datetime",now.split(" ")[1]);
         return JSON.toJSONString(result);
+    }
+
+    private String updateDayAlarmInfoNumber(){
+        String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
+        String date = now.split(" ")[0];
+        date += " 00:00:00";
+        int number = getExcessGasMapper().queryDayAllAlarmNumber(date);
+        return JSON.toJSONString(number);
     }
 }

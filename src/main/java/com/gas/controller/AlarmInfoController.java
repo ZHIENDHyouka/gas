@@ -20,4 +20,8 @@ public class AlarmInfoController {
         ResultVO result = alarmInfoService.getRealTimeAlarmDataer();
         return result;
     }
+    @GetMapping("/getDayAllAlarmInfo")
+    public ResultVO getDayAllAlarmInfo(){
+        return alarmInfoService.getDayAllAlarmInfo();
+    }
 }
