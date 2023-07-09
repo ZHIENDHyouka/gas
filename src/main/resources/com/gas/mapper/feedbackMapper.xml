@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gas.mapper.FeedbackMapper">
+
+    <resultMap type="com.gas.entity.Feedback" id="feedbackMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="submitTime" column="submit_time" jdbcType="VARCHAR"/>
+        <result property="problemDescribe" column="problem_describe" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+    </resultMap>
+    <insert id="addFeedback" parameterType="com.gas.entity.Feedback">
+        insert into feedback(user_id,user_name,submit_time,problem_describe)
+        values (#{userId},#{userName},#{submitTime},#{problemDescribe})
+    </insert>
+
+    <update id="updateFeedbackInfo">
+        update feedback set status=1 where id=#{id}
+    </update>
+
+    <select id="getAllFeedbackList" resultMap="feedbackMap">
+        select id,user_id,user_name,submit_time,problem_describe,status
+        from feedback
+        order by status asc,submit_time asc
+    </select>
+
+
+</mapper>
+

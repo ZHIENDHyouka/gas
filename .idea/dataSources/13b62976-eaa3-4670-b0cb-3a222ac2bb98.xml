@@ -825,353 +825,406 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_general_ci</CollationName>
     </table>
-    <table id="249" parent="224" name="harmful_gas">
+    <table id="249" parent="224" name="feedback">
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_general_ci</CollationName>
+    </table>
+    <table id="250" parent="224" name="harmful_gas">
       <Engine>InnoDB</Engine>
       <CollationName>utf8_general_ci</CollationName>
     </table>
-    <table id="250" parent="224" name="humidity">
+    <table id="251" parent="224" name="humidity">
       <Engine>InnoDB</Engine>
       <CollationName>utf8_general_ci</CollationName>
     </table>
-    <table id="251" parent="224" name="manager">
+    <table id="252" parent="224" name="manager">
       <Engine>InnoDB</Engine>
       <CollationName>utf8_general_ci</CollationName>
     </table>
-    <table id="252" parent="224" name="manager_review">
+    <table id="253" parent="224" name="manager_review">
       <Engine>InnoDB</Engine>
       <CollationName>utf8_general_ci</CollationName>
     </table>
-    <table id="253" parent="224" name="record_device_number">
+    <table id="254" parent="224" name="record_device_number">
       <Engine>InnoDB</Engine>
       <CollationName>utf8_general_ci</CollationName>
     </table>
-    <table id="254" parent="224" name="temperature">
+    <table id="255" parent="224" name="temperature">
       <Engine>InnoDB</Engine>
       <CollationName>utf8_general_ci</CollationName>
     </table>
-    <column id="255" parent="246" name="id">
+    <column id="256" parent="246" name="id">
       <AutoIncrement>1</AutoIncrement>
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="256" parent="246" name="name">
+    <column id="257" parent="246" name="name">
       <Comment>气体名称</Comment>
       <DataType>varchar(255)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="257" parent="246" name="value">
+    <column id="258" parent="246" name="value">
       <Comment>临界值</Comment>
       <DataType>float|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <index id="258" parent="246" name="PRIMARY">
+    <index id="259" parent="246" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="259" parent="246" name="PRIMARY">
+    <key id="260" parent="246" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="260" parent="247" name="d_id">
+    <column id="261" parent="247" name="d_id">
       <AutoIncrement>11</AutoIncrement>
       <Comment>id</Comment>
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="261" parent="247" name="d_name">
+    <column id="262" parent="247" name="d_name">
       <Comment>设备名称或者编号</Comment>
       <DataType>varchar(255)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="262" parent="247" name="d_status">
+    <column id="263" parent="247" name="d_status">
       <Comment>设备状态 默认是1 关闭是0</Comment>
       <DataType>int(11)|0s</DataType>
       <DefaultExpression>1</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <index id="263" parent="247" name="PRIMARY">
+    <column id="264" parent="247" name="d_coordinates">
+      <DataType>varchar(255)|0s</DataType>
+      <Position>4</Position>
+    </column>
+    <index id="265" parent="247" name="PRIMARY">
       <ColNames>d_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="264" parent="247" name="PRIMARY">
+    <key id="266" parent="247" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="265" parent="248" name="e_id">
-      <AutoIncrement>2</AutoIncrement>
+    <column id="267" parent="248" name="e_id">
+      <AutoIncrement>13766</AutoIncrement>
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="266" parent="248" name="gas_name">
+    <column id="268" parent="248" name="gas_name">
       <DataType>varchar(50)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="267" parent="248" name="gas_type">
+    <column id="269" parent="248" name="gas_type">
       <DataType>varchar(30)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <column id="268" parent="248" name="indatetime">
+    <column id="270" parent="248" name="indatetime">
       <DataType>varchar(255)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>4</Position>
     </column>
-    <column id="269" parent="248" name="gas_value">
+    <column id="271" parent="248" name="gas_value">
       <DataType>varchar(255)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>5</Position>
     </column>
-    <column id="270" parent="248" name="device_id">
+    <column id="272" parent="248" name="device_id">
       <DataType>varchar(255)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>6</Position>
     </column>
-    <index id="271" parent="248" name="PRIMARY">
+    <index id="273" parent="248" name="PRIMARY">
       <ColNames>e_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="272" parent="248" name="PRIMARY">
+    <key id="274" parent="248" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="273" parent="249" name="g_id">
-      <AutoIncrement>50001</AutoIncrement>
+    <column id="275" parent="249" name="id">
+      <AutoIncrement>2</AutoIncrement>
+      <Comment>id</Comment>
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="274" parent="249" name="g_name">
+    <column id="276" parent="249" name="user_id">
+      <Comment>用户id</Comment>
+      <DataType>int(11)|0s</DataType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+    </column>
+    <column id="277" parent="249" name="user_name">
+      <Comment>用户名</Comment>
+      <DataType>varchar(50)|0s</DataType>
+      <Position>3</Position>
+    </column>
+    <column id="278" parent="249" name="submit_time">
+      <Comment>提交时间</Comment>
+      <DataType>varchar(50)|0s</DataType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+    </column>
+    <column id="279" parent="249" name="problem_describe">
+      <Comment>问题描述</Comment>
+      <DataType>varchar(255)|0s</DataType>
+      <Position>5</Position>
+    </column>
+    <column id="280" parent="249" name="status">
+      <Comment>0 未解决 1已解决</Comment>
+      <DataType>int(11)|0s</DataType>
+      <DefaultExpression>0</DefaultExpression>
+      <Position>6</Position>
+    </column>
+    <index id="281" parent="249" name="PRIMARY">
+      <ColNames>id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="282" parent="249" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="283" parent="250" name="g_id">
+      <AutoIncrement>97701</AutoIncrement>
+      <DataType>int(11)|0s</DataType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="284" parent="250" name="g_name">
       <Comment>气体名称</Comment>
       <DataType>varchar(255)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="275" parent="249" name="g_data">
+    <column id="285" parent="250" name="g_data">
       <Comment>数据</Comment>
       <DataType>float(5,2 digit)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <column id="276" parent="249" name="g_indate">
+    <column id="286" parent="250" name="g_indate">
       <Comment>入库时间</Comment>
       <DataType>varchar(50)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>4</Position>
     </column>
-    <column id="277" parent="249" name="g_device_id">
+    <column id="287" parent="250" name="g_device_id">
       <Comment>设备编号</Comment>
       <DataType>varchar(255)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>5</Position>
     </column>
-    <index id="278" parent="249" name="PRIMARY">
+    <index id="288" parent="250" name="PRIMARY">
       <ColNames>g_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="279" parent="249" name="PRIMARY">
+    <key id="289" parent="250" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="280" parent="250" name="h_id">
-      <AutoIncrement>50001</AutoIncrement>
+    <column id="290" parent="251" name="h_id">
+      <AutoIncrement>50955</AutoIncrement>
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="281" parent="250" name="h_data">
+    <column id="291" parent="251" name="h_data">
       <Comment>数据</Comment>
       <DataType>float(5,2 digit)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="282" parent="250" name="h_indate">
+    <column id="292" parent="251" name="h_indate">
       <Comment>入库时间</Comment>
       <DataType>varchar(50)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <column id="283" parent="250" name="h_device_id">
+    <column id="293" parent="251" name="h_device_id">
       <Comment>设备编号</Comment>
       <DataType>varchar(255)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>4</Position>
     </column>
-    <index id="284" parent="250" name="PRIMARY">
+    <index id="294" parent="251" name="PRIMARY">
       <ColNames>h_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="285" parent="250" name="PRIMARY">
+    <key id="295" parent="251" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="286" parent="251" name="manager_id">
+    <column id="296" parent="252" name="manager_id">
       <AutoIncrement>16</AutoIncrement>
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="287" parent="251" name="m_username">
+    <column id="297" parent="252" name="m_username">
       <DataType>varchar(50)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="288" parent="251" name="password">
+    <column id="298" parent="252" name="password">
       <DataType>char(32)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <column id="289" parent="251" name="manager_level">
+    <column id="299" parent="252" name="manager_level">
       <Comment>用户等级 1为超级管理员 2为普通管理员</Comment>
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>4</Position>
     </column>
-    <column id="290" parent="251" name="account_status">
+    <column id="300" parent="252" name="account_status">
       <Comment>账号禁用状态 0 为禁用 1为启用</Comment>
       <DataType>int(11)|0s</DataType>
       <DefaultExpression>1</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>5</Position>
     </column>
-    <index id="291" parent="251" name="PRIMARY">
+    <index id="301" parent="252" name="PRIMARY">
       <ColNames>manager_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="292" parent="251" name="username">
+    <index id="302" parent="252" name="username">
       <ColNames>m_username</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="293" parent="251" name="PRIMARY">
+    <key id="303" parent="252" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <key id="294" parent="251" name="username">
+    <key id="304" parent="252" name="username">
       <UnderlyingIndexName>username</UnderlyingIndexName>
     </key>
-    <column id="295" parent="252" name="r_id">
+    <column id="305" parent="253" name="r_id">
       <AutoIncrement>24</AutoIncrement>
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="296" parent="252" name="username">
+    <column id="306" parent="253" name="username">
       <Comment>用户名</Comment>
       <DataType>varchar(50)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="297" parent="252" name="password">
+    <column id="307" parent="253" name="password">
       <Comment>密码 md5加密之后</Comment>
       <DataType>varchar(50)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <column id="298" parent="252" name="r_indate">
+    <column id="308" parent="253" name="r_indate">
       <Comment>申请日期</Comment>
       <DataType>varchar(50)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>4</Position>
     </column>
-    <column id="299" parent="252" name="r_status">
+    <column id="309" parent="253" name="r_status">
       <Comment>状态 0为 未审核 1为通过审核 -1 审核拒绝 默认值为0 </Comment>
       <DataType>int(11)|0s</DataType>
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>5</Position>
     </column>
-    <column id="300" parent="252" name="r_outdate">
+    <column id="310" parent="253" name="r_outdate">
       <Comment>审核日期</Comment>
       <DataType>varchar(50)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>6</Position>
     </column>
-    <index id="301" parent="252" name="PRIMARY">
+    <index id="311" parent="253" name="PRIMARY">
       <ColNames>r_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="302" parent="252" name="PRIMARY">
+    <key id="312" parent="253" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="303" parent="253" name="id">
-      <AutoIncrement>1</AutoIncrement>
+    <column id="313" parent="254" name="id">
+      <AutoIncrement>955</AutoIncrement>
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="304" parent="253" name="run_device_number">
+    <column id="314" parent="254" name="run_device_number">
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="305" parent="253" name="record_datetime">
+    <column id="315" parent="254" name="record_datetime">
       <DataType>varchar(60)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <index id="306" parent="253" name="PRIMARY">
+    <index id="316" parent="254" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="307" parent="253" name="PRIMARY">
+    <key id="317" parent="254" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="308" parent="254" name="t_id">
-      <AutoIncrement>60001</AutoIncrement>
+    <column id="318" parent="255" name="t_id">
+      <AutoIncrement>60955</AutoIncrement>
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="309" parent="254" name="t_data">
+    <column id="319" parent="255" name="t_data">
       <Comment>数据</Comment>
       <DataType>float(5,2 digit)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <column id="310" parent="254" name="t_indate">
+    <column id="320" parent="255" name="t_indate">
       <Comment>入库日期</Comment>
       <DataType>varchar(50)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
     </column>
-    <column id="311" parent="254" name="t_device_id">
+    <column id="321" parent="255" name="t_device_id">
       <Comment>设备编号</Comment>
       <DataType>varchar(255)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>4</Position>
     </column>
-    <index id="312" parent="254" name="PRIMARY">
+    <index id="322" parent="255" name="PRIMARY">
       <ColNames>t_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="313" parent="254" name="PRIMARY">
+    <key id="323" parent="255" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>

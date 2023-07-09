@@ -1,8 +1,10 @@
 package com.gas.service;
 
+import com.gas.entity.Feedback;
 import com.gas.entity.ManagerReview;
 import com.gas.entity.ResultVO;
 import com.gas.entity.Manager;
+import com.gas.mapper.FeedbackMapper;
 import com.gas.mapper.ManagerMapper;
 import com.gas.mapper.ManagerReviewMapper;
 import com.gas.utils.DateTimeUtil;
@@ -25,29 +27,31 @@ public class ManagerService {
     @Autowired
     private ManagerReviewMapper reviewMapper;
 
+    @Autowired
+    private FeedbackMapper feedbackMapper;
+
     public ResultVO managerLogin(Manager user) {
         Manager manager = managerMapper.queryUsername(user.getUsername());
         String msg = "";
         int code = 0;
-        String username = null;
-        if (manager!=null){
-            if (manager.getAccountStatus()==0){
-                msg="账号被禁用";
-            }else {
-                if (Md5Util.getMd5(user.getPassword()).equals(manager.getPassword())){
+        if (manager != null) {
+            if (manager.getAccountStatus() == 0) {
+                msg = "账号被禁用";
+            } else {
+                if (Md5Util.getMd5(user.getPassword()).equals(manager.getPassword())) {
                     //密码正确
-                    msg="登陆成功!";
-                    code=1;
-                    username=manager.getUsername();
-                }else {
+                    msg = "登陆成功!";
+                    code = 1;
+                    manager.setPassword("");
+                } else {
                     //密码错误
-                    msg="密码错误!";
+                    msg = "密码错误!";
                 }
             }
-        }else {
-            msg="账号不存在!";
+        } else {
+            msg = "账号不存在!";
         }
-        ResultVO resultVO = new ResultVO(code,username,msg);
+        ResultVO resultVO = new ResultVO(code, manager, msg);
         return resultVO;
     }
 
@@ -70,37 +74,37 @@ public class ManagerService {
         return new ResultVO(code, null, msg);
     }
 
-    public ResultVO getAllManagerInfo(){
+    public ResultVO getAllManagerInfo() {
         List<Manager> managers = managerMapper.queryAllManager();
-        return new ResultVO(1,managers,"获取成功");
+        return new ResultVO(1, managers, "获取成功");
     }
 
-    public ResultVO changeManagerAcountStatus(int id,int status){
+    public ResultVO changeManagerAcountStatus(int id, int status) {
         int i = managerMapper.updateAccountStatusById(id, status);
-        if (i>0) {
-           return new ResultVO(1,null,"修改成功!");
-        }else {
-            return new ResultVO(0,null,"修改失败!");
+        if (i > 0) {
+            return new ResultVO(1, null, "修改成功!");
+        } else {
+            return new ResultVO(0, null, "修改失败!");
         }
     }
 
-    public ResultVO searchNameOrStatusData(Map<String,Object> map){
+    public ResultVO searchNameOrStatusData(Map<String, Object> map) {
         String type = map.get("type").toString();
         String value = map.get("value").toString();
         List<Manager> managers = null;
-        if ("1".equals(type)){
+        if ("1".equals(type)) {
             managers = managerMapper.queryLikeName(value);
-        }else if ("2".equals(type)){
+        } else if ("2".equals(type)) {
             managers = managerMapper.queryStatus(Integer.parseInt(value));
 //            managers = managerMapper.queryStatus(0);
         }
-        return new ResultVO(0,managers,"");
+        return new ResultVO(0, managers, "");
     }
 
     public ResultVO getAllManagerReviewList() {
         ResultVO resultVO = new ResultVO(0, null, "");
         List<ManagerReview> managerReviewList = reviewMapper.getAllManagerReviewList();
-        if (managerReviewList.size()>0) {
+        if (managerReviewList.size() > 0) {
             resultVO.setCode(1);
             resultVO.setMsg("查询成功");
             resultVO.setData(managerReviewList);
@@ -140,6 +144,32 @@ public class ManagerService {
             throw new RuntimeException("删除操作错误");
         }
         resultVO.setCode(1);
+        return resultVO;
+    }
+
+    public ResultVO submitFeedbackInfo(Feedback feedback) {
+        ResultVO resultVO = new ResultVO(0, null, "");
+        String date = DateTimeUtil.getNowFormatDateTimeString(DATETIMEFORMAT);
+        feedback.setSubmitTime(date);
+        int i = feedbackMapper.addFeedback(feedback);
+        if (1 == i) {
+            resultVO.setCode(1);
+        }
+        return resultVO;
+    }
+
+    public ResultVO getAllFeedbackList() {
+        List<Feedback> feedbacks = feedbackMapper.getAllFeedbackList();
+        ResultVO resultVO = new ResultVO(1, feedbacks, "");
+        return resultVO;
+    }
+
+    public ResultVO updateFeedbackInfo(Integer id) {
+        ResultVO resultVO = new ResultVO(0, null, "");
+        int i = feedbackMapper.updateFeedbackInfo(id);
+        if (1 == i) {
+            resultVO.setCode(1);
+        }
         return resultVO;
     }
 }

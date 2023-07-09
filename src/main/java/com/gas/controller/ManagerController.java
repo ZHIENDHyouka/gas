@@ -1,5 +1,6 @@
 package com.gas.controller;
 
+import com.gas.entity.Feedback;
 import com.gas.entity.ResultVO;
 import com.gas.entity.Manager;
 import com.gas.service.ManagerService;
@@ -60,6 +61,20 @@ public class ManagerController {
         return managerService.refuseManagerReview(idMap.get("id"));
     }
 
+    @PostMapping("/submitFeedbackInfo")
+    public ResultVO submitFeedbackInfo(@RequestBody Feedback feedback){
+        return managerService.submitFeedbackInfo(feedback);
+    }
+
+    @GetMapping("/getFeedbackInfoData")
+    public ResultVO getAllFeedbackList(){
+        return managerService.getAllFeedbackList();
+    }
+
+    @PostMapping("/solvingProblems")
+    public ResultVO solvingProblems(@RequestBody Map<String,Integer> idMap){
+        return managerService.updateFeedbackInfo(idMap.get("id"));
+    }
 
 
 }
