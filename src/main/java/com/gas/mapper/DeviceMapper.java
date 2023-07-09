@@ -16,5 +16,7 @@ public interface DeviceMapper {
 
     List<Device> getAllDeviceInfo();
 
+    List<Device> getDeviceInfoByStatus(@Param("status") int status);
+
     void updateDeviceState(Integer state, Integer serviceId);
 }

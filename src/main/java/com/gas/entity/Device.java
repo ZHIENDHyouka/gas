@@ -11,4 +11,5 @@ public class Device {
     private int id;
     private String deviceName;
     private int deviceStatus;
+    private String coordinates;
 }

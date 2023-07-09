@@ -127,6 +127,7 @@ public class WebSocket {
                 sendMessage(JSON.toJSONString(result));
             }
         }else if ("3".equals(code)){
+            //报警数据
             Integer number = (Integer) map.get("data");
             String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
             String date = now.split(" ")[0];

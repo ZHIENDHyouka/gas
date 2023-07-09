@@ -7,6 +7,7 @@
         <id column="d_id" property="id"></id>
         <result column="d_name" property="deviceName"></result>
         <result column="d_status" property="deviceStatus"></result>
+        <result column="d_coordinates" property="coordinates"></result>
     </resultMap>
     <insert id="addDeviceDataTest">
         insert into device(d_name) VALUES(#{device.deviceName})
@@ -23,6 +24,10 @@
     </select>
     <select id="getAllDeviceInfo" resultMap="deviceMap">
         select * from device
+    </select>
+    <select id="getDeviceInfoByStatus" resultMap="deviceMap">
+        select *
+        from device where d_status=#{status};
     </select>
 
 </mapper>
