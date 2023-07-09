@@ -59,7 +59,7 @@ public class DeivceService {
 
     public ResultVO getAllDeviceInfo() {
         List<Device> allDevice = deviceMapper.getAllDeviceInfo();
-        return new ResultVO(1, allDevice, "");
+        return new ResultVO(1, allDevice, "") ;
     }
 
     public ResultVO updateDeviceState(Map<String, Integer> message) {
