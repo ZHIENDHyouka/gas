@@ -15,7 +15,6 @@ import java.util.List;
 @Repository
 public interface FeedbackMapper {
 
-
     int addFeedback(Feedback feedback);
 
     List<Feedback> getAllFeedbackList();

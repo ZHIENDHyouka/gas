@@ -27,7 +27,7 @@
 
     <select id="queryAllManager" resultMap="managerMap">
         select manager_id,m_username,manager_level,account_status
-        from manager ORDER BY manager_level asc;
+        from manager ORDER BY manager_level asc,account_status desc ;
     </select>
 
     <select id="queryLikeName" resultMap="managerMap">

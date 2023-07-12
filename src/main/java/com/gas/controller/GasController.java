@@ -37,4 +37,5 @@ public class GasController {
         return gasService.queryHarmfulGasAvgData();
     }
 
+
 }

@@ -70,4 +70,5 @@ public class DeivceService {
         result.setCode(1);
         return result;
     }
+
 }

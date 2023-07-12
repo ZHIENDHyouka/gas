@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gas.mapper.GasMapper">
+    <resultMap id="gasMap" type="com.gas.entity.Gas">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <result column="db_table" property="tableName"></result>
+    </resultMap>
+    <select id="queryAllGasName" resultMap="gasMap">
+        SELECT name from gas ORDER BY id asc
+    </select>
+</mapper>

@@ -22,7 +22,7 @@
     <select id="getAllFeedbackList" resultMap="feedbackMap">
         select id,user_id,user_name,submit_time,problem_describe,status
         from feedback
-        order by status asc,submit_time asc
+        order by `status` asc ,submit_time desc
     </select>
 
 
