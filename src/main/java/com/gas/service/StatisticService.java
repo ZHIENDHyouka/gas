@@ -83,8 +83,29 @@ public class StatisticService {
             code=getDrawLine1Data(uintStatisticDataList,result);
         }else if ("line2".equals(chartType)){
             //封装堆叠图
+            code=getDrawLine2Data(uintStatisticDataList,result);
         }
         return new ResultVO(code,result,"");
+    }
+
+    //面积图封装
+    private int getDrawLine2Data(List<Map<String,Object>>unitStatisticData,Map<String,Object>result){
+        if (unitStatisticData.size()>0) {
+            ArrayList<Double> dataList = new ArrayList<>();
+            ArrayList<String> dateList = new ArrayList<>();
+            result.put("dataList", dataList);
+            result.put("dateList", dateList);
+            unitStatisticData.stream().forEach(map -> {
+                dateList.add(map.get("datetime").toString());
+                if (((Double) map.get("data"))==null){
+                    dataList.add(0.0);
+                }else {
+                    dataList.add((Double) map.get("data"));
+                }
+            });
+            return 1;
+        }
+        return 0;
     }
 
     //折线图封装
