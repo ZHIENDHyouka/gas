@@ -11,4 +11,8 @@
     <select id="queryAllGasName" resultMap="gasMap">
         SELECT name from gas ORDER BY id asc
     </select>
+    <select id="queryGasDBTable" resultMap="gasMap">
+        select db_table
+        from gas where name=#{name};
+    </select>
 </mapper>

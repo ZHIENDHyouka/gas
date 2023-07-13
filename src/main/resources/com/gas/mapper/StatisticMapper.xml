@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gas.mapper.StatisticMapper">
+
+
+    <select id="queryGasDate" resultType="java.util.Map">
+        select ${dataColumn},${indateColumn}
+        from ${table}
+        where ${indateColumn} &lt;= #{end} and ${indateColumn} &gt;= #{start}
+    <if test="gasName!=null">
+        and g_name=#{gasName}
+    </if>
+        order by ${indateColumn} asc
+    </select>
+</mapper>
