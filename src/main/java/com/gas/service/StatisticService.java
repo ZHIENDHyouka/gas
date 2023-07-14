@@ -4,12 +4,9 @@ import com.gas.entity.Gas;
 import com.gas.entity.ResultVO;
 import com.gas.mapper.GasMapper;
 import com.gas.mapper.StatisticMapper;
-import com.gas.utils.DateTimeUtil;
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
@@ -71,61 +68,51 @@ public class StatisticService {
                 datetimeList.get(0).toString()
                 , datetimeList.get(1).toString()
                 , gasName, dataColumn, indateColumn);
-
         //获取统计之后的数据
         List<Map<String, Object>> uintStatisticDataList = getUintStatisticDataList(maps, unit, satisticValue, dataColumn, indateColumn, datetimeList);
-        HashMap<String, Object> result = new HashMap<>();
         int code = 0;
-        if ("".equals(chartType)){
+        if ("".equals(chartType)) {
             //封装所有的图
-        }else if ("line1".equals(chartType)){
-            //封装基本折线图
-            code=getDrawLine1Data(uintStatisticDataList,result);
-        }else if ("line2".equals(chartType)){
-            //封装堆叠图
-            code=getDrawLine2Data(uintStatisticDataList,result);
+            HashMap<String, Object> drawAllData = new HashMap<>();
+            Map<String, Object> drawLineAndAreaData = getDrawLineAndAreaData(uintStatisticDataList);//折线图和面积图数据是一样的用一个就好
+            drawAllData.put("drawLineAndAreaData",drawLineAndAreaData);
+            return new ResultVO(1, drawAllData, "");
+        } else if ("line1".equals(chartType)||"line2".equals(chartType)) {
+            //封装基本折线图和面积图
+            Map<String, Object> result = getDrawLineAndAreaData(uintStatisticDataList);
+            code=(int)result.get("code");
+            return new ResultVO(code, result.get("data"), "");
+        } else if ("xxx".equals(chartType)) {
         }
-        return new ResultVO(code,result,"");
+        return new ResultVO(code, null, "");
     }
 
-    //面积图封装
-    private int getDrawLine2Data(List<Map<String,Object>>unitStatisticData,Map<String,Object>result){
-        if (unitStatisticData.size()>0) {
+    //折线图和面积图封装
+    private Map<String, Object> getDrawLineAndAreaData(List<Map<String, Object>> unitStatisticData) {
+        HashMap<String, Object> result = new HashMap<>();
+        if (unitStatisticData.size() > 0) {
+            HashMap<String, Object> resultDataMap = new HashMap<>();
             ArrayList<Double> dataList = new ArrayList<>();
             ArrayList<String> dateList = new ArrayList<>();
-            result.put("dataList", dataList);
-            result.put("dateList", dateList);
+            resultDataMap.put("dataList", dataList);
+            resultDataMap.put("dateList", dateList);
             unitStatisticData.stream().forEach(map -> {
                 dateList.add(map.get("datetime").toString());
-                if (((Double) map.get("data"))==null){
+                if (((Double) map.get("data")) == null) {
                     dataList.add(0.0);
-                }else {
+                } else {
                     dataList.add((Double) map.get("data"));
                 }
             });
-            return 1;
+            result.put("code", 1);
+            result.put("data", resultDataMap);
+            result.put("msg", "");
+            return result;
         }
-        return 0;
-    }
-
-    //折线图封装
-    private int getDrawLine1Data(List<Map<String,Object>>unitStatisticData,Map<String,Object>result){
-        if (unitStatisticData.size()>0) {
-            ArrayList<Double> dataList = new ArrayList<>();
-            ArrayList<String> dateList = new ArrayList<>();
-            result.put("dataList", dataList);
-            result.put("dateList", dateList);
-            unitStatisticData.stream().forEach(map -> {
-                dateList.add(map.get("datetime").toString());
-                if (((Double) map.get("data"))==null){
-                    dataList.add(0.0);
-                }else {
-                    dataList.add((Double) map.get("data"));
-                }
-            });
-            return 1;
-        }
-        return 0;
+        result.put("code", 0);
+        result.put("data", null);
+        result.put("msg", "折线图面积图为获取到数据");
+        return result;
     }
 
     //根据日期单位和统计计算方式处理数据
@@ -137,50 +124,49 @@ public class StatisticService {
         ArrayList<Double> calcList = new ArrayList<>();
         if ("day".equals(unit)) {
             //变成yyyy-MM-dd格式
-            String startDateTimeFormat=start.substring(0, 10);
-            int count=0;
+            String startDateTimeFormat = start.substring(0, 10);
+            int count = 0;
             for (Map m : dataList) {
-                String datetime = m.get(indateColumn).toString().substring(0,10)+" 00:00:00";
-                String datetimeFormart = m.get(indateColumn).toString().substring(0,10);
+                String datetime = m.get(indateColumn).toString().substring(0, 10) + " 00:00:00";
+                String datetimeFormart = m.get(indateColumn).toString().substring(0, 10);
                 //在同一天
-                if (startDateTimeFormat.equals(datetimeFormart)){
+                if (startDateTimeFormat.equals(datetimeFormart)) {
                     //添加数据
-                    Double value = ((Float)m.get(dataColumn)).doubleValue();
+                    Double value = ((Float) m.get(dataColumn)).doubleValue();
                     calcList.add(value);
-                }else {
+                } else {
                     //计算上一轮的数据
-                    calcData(calcList,satisticValue,startDateTimeFormat,result);
-
+                    calcData(calcList, satisticValue, startDateTimeFormat, result);
                     //计算时间戳
                     long nextTimeStamp = getStringTimeStamp(datetime, DATETIMEFORMAT);
-                    long previousTimeStamp = getStringTimeStamp(startDateTimeFormat+" 00:00:00", DATETIMEFORMAT);
+                    long previousTimeStamp = getStringTimeStamp(startDateTimeFormat + " 00:00:00", DATETIMEFORMAT);
                     //计算相差天数
-                   Long intervalDay = (nextTimeStamp-previousTimeStamp)/1000/60/60/24;
-                   if (intervalDay!=1){
-                       for (int i = 0; i < intervalDay-1; i++) {
-                           HashMap<String, Object> lackMap = new HashMap<>();
-                           lackMap.put("date",0.0);
-                           previousTimeStamp+=1000*60*60*24;
-                           LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(previousTimeStamp / 1000, 0, ZoneOffset.ofHours(8));
-                           String localDateTimeFormat = getLocalDateTimeFormat(localDateTime, DATEFORMAT);
-                           lackMap.put("datetime",localDateTimeFormat);
-                           result.add(lackMap);
-                       }
-                   }
-                    startDateTimeFormat=datetimeFormart;
+                    Long intervalDay = (nextTimeStamp - previousTimeStamp) / 1000 / 60 / 60 / 24;
+                    if (intervalDay != 1) {
+                        for (int i = 0; i < intervalDay - 1; i++) {
+                            HashMap<String, Object> lackMap = new HashMap<>();
+                            lackMap.put("date", 0.0);
+                            previousTimeStamp += 1000 * 60 * 60 * 24;
+                            LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(previousTimeStamp / 1000, 0, ZoneOffset.ofHours(8));
+                            String localDateTimeFormat = getLocalDateTimeFormat(localDateTime, DATEFORMAT);
+                            lackMap.put("datetime", localDateTimeFormat);
+                            result.add(lackMap);
+                        }
+                    }
+                    startDateTimeFormat = datetimeFormart;
                 }
                 count++;
-                if (count==dataList.size()-1){
-                    calcData(calcList,satisticValue,startDateTimeFormat,result);
+                if (count == dataList.size() - 1) {
+                    calcData(calcList, satisticValue, startDateTimeFormat, result);
                 }
             }
             //最后补齐
-            addFinalData(result,end);
+            addFinalData(result, end);
         } else if ("month".equals(unit)) {
             //获取起始时间的月
             String month = start.substring(5, 7);
             //存储上一个月的时间数据yyyy-MM-dd
-            String tmepDateTime = start.substring(0,7);
+            String tmepDateTime = start.substring(0, 7);
             int count = 0;
             for (Map m : dataList) {
                 //当前数据时间的月
@@ -188,14 +174,14 @@ public class StatisticService {
                 //如果月不同则说明遍历进入了下一个月 对当前月进行数据处理即可
                 if (!dataMonth.equals(month)) {
                     //计算上一个月份的数据
-                    calcData(calcList,satisticValue,tmepDateTime,result);
+                    calcData(calcList, satisticValue, tmepDateTime, result);
                     //比较2月份是否连续
                     int i = stringNumberIsContinue(month, dataMonth);
                     if (i != 0) {
-                        i=Integer.parseInt(m.get(indateColumn).toString().substring(0, 4))-Integer.parseInt(tmepDateTime.substring(0,4))*12+i;
+                        i = Integer.parseInt(m.get(indateColumn).toString().substring(0, 4)) - Integer.parseInt(tmepDateTime.substring(0, 4)) * 12 + i;
                         int intMonth = Integer.parseInt(month);
                         //不连续要补齐缺失的月份 数据为0即可
-                        for (int j = 0; j < i-1; j++) {
+                        for (int j = 0; j < i - 1; j++) {
                             intMonth++;
                             String lackMonth = "";
                             if (intMonth >= 13) intMonth = 1;
@@ -211,11 +197,11 @@ public class StatisticService {
                     month = dataMonth;
                     tmepDateTime = m.get(indateColumn).toString().substring(0, 7);
                 }
-                Double value = ((Float)m.get(dataColumn)).doubleValue();
+                Double value = ((Float) m.get(dataColumn)).doubleValue();
                 calcList.add(value);
                 count++;
-                if (count==dataList.size()-1){
-                    calcData(calcList,satisticValue,month,result);
+                if (count == dataList.size() - 1) {
+                    calcData(calcList, satisticValue, month, result);
                 }
             }
         } else if ("year".equals(unit)) {
@@ -227,11 +213,11 @@ public class StatisticService {
                 String dataYear = m.get(indateColumn).toString().substring(0, 4);
                 if (!dataYear.equals(year)) {
                     //计算前一轮的数据
-                    calcData(calcList,satisticValue,year,result);
+                    calcData(calcList, satisticValue, year, result);
                     int i = stringNumberIsContinue(year, dataYear);
                     if (i != 0) {
                         int intYear = Integer.parseInt(year);
-                        for (int j = 0; j < i-1; j++) {
+                        for (int j = 0; j < i - 1; j++) {
                             intYear++;
                             HashMap<String, Object> lackMap = new HashMap<>();
                             lackMap.put("data", 0.0);
@@ -239,13 +225,13 @@ public class StatisticService {
                             result.add(lackMap);
                         }
                     }
-                    year=dataYear;
+                    year = dataYear;
                 }
-                Double value = ((Float)m.get(dataColumn)).doubleValue();
+                Double value = ((Float) m.get(dataColumn)).doubleValue();
                 calcList.add(value);
                 count++;
-                if (count==dataList.size()-1){
-                    calcData(calcList,satisticValue,year,result);
+                if (count == dataList.size() - 1) {
+                    calcData(calcList, satisticValue, year, result);
                 }
             }
         }
@@ -270,11 +256,12 @@ public class StatisticService {
     private int stringNumberIsContinue(String number, String nextNumber) {
         return Integer.parseInt(number) - Integer.parseInt(nextNumber) > 1 ? Integer.parseInt(number) - Integer.parseInt(nextNumber) : 0;
     }
+
     //计算上一轮的数据
-    private void calcData(List calcList,String satisticValue,String startDateTimeFormat, List result){
+    private void calcData(List calcList, String satisticValue, String startDateTimeFormat, List result) {
         Double calc = 0.0;
         HashMap<String, Object> dayDataMap = new HashMap<>();
-        if (calcList.size()>0) {
+        if (calcList.size() > 0) {
             if ("average".equals(satisticValue)) {
                 calc = getGasListAverage(calcList);
             } else if ("median".equals(satisticValue)) {
@@ -288,17 +275,17 @@ public class StatisticService {
         calcList.clear();
     }
 
-    private void addFinalData(List<Map<String,Object>> result,String end){
+    private void addFinalData(List<Map<String, Object>> result, String end) {
         long listEndStamp = getStringTimeStamp(result.get(result.size() - 1).get("datetime").toString() + " 00:00:00", DATETIMEFORMAT);
-        long endStamp = getStringTimeStamp(end,DATETIMEFORMAT);
-        long stampIntervalDay = (endStamp-listEndStamp)/1000/60/60/24;
+        long endStamp = getStringTimeStamp(end, DATETIMEFORMAT);
+        long stampIntervalDay = (endStamp - listEndStamp) / 1000 / 60 / 60 / 24;
         for (int i = 0; i < stampIntervalDay; i++) {
             HashMap<String, Object> lackMap = new HashMap<>();
-            lackMap.put("date",0.0);
-            listEndStamp+=1000*60*60*24;
+            lackMap.put("date", 0.0);
+            listEndStamp += 1000 * 60 * 60 * 24;
             LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(listEndStamp / 1000, 0, ZoneOffset.ofHours(8));
             String localDateTimeFormat = getLocalDateTimeFormat(localDateTime, DATEFORMAT);
-            lackMap.put("datetime",localDateTimeFormat);
+            lackMap.put("datetime", localDateTimeFormat);
             result.add(lackMap);
         }
     }
