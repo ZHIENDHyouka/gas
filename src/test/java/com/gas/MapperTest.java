@@ -8,6 +8,7 @@ import com.gas.entity.Temperature;
 import com.gas.mapper.TemperatureMapper;
 import com.gas.mapper.TestMapper;
 import com.gas.utils.DateTimeUtil;
+import com.gas.utils.StringUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,11 @@ public class MapperTest {
         LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(stringTimeStamp2 / 1000, 0, ZoneOffset.ofHours(8));
         String localDateTimeFormat = getLocalDateTimeFormat(localDateTime, DATEFORMAT);
         System.out.println(localDateTimeFormat);
+    }
+    @Test
+    public void test4(){
+        boolean empty = StringUtil.isEmpty("");
+        System.out.println(empty);
     }
 
 }

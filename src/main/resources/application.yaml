@@ -28,3 +28,14 @@ spring:
 gas:
   download:
     path: "d:/gas/"
+
+#阿里云连接配置
+#accessKey: "LTAI5tC8zq314HFEB4b39rSh"
+#accessSecret: "LTAI5tC8zq314HFEB4b39rSh"
+#consumerGroupId: "4sqWAPEVNfL7IrlmRFnS000100"
+#productKey: "j16hauhZMDv"
+#iotInstanceId: "iot-06z00j7csd6edmj"
+#clientId: "1234"
+#host: "iot-06z00j7csd6edmj.amqp.iothub.aliyuncs.com"
+#apiUrl: "iot.cn-shanghai.aliyuncs.com"
+#updateDeviceTopic: "/j16hauhZMDv/1234/user/updateDevice"

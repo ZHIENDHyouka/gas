@@ -1,5 +1,7 @@
 package com.gas.service;
 
+import com.alibaba.fastjson2.JSON;
+import com.gas.common.client.PopPubServer;
 import com.gas.entity.Device;
 import com.gas.entity.ResultVO;
 import com.gas.mapper.DeviceMapper;
@@ -66,8 +68,14 @@ public class DeivceService {
         ResultVO result = new ResultVO(0, null, "");
         Integer state = message.get("state");
         Integer serviceId = message.get("serviceId");
-        deviceMapper.updateDeviceState(state,serviceId);
-        result.setCode(1);
+        //向设备发送关闭信息
+        HashMap<String, Object> switchMap = new HashMap<>();
+        switchMap.put("switch",state);
+        boolean flag = PopPubServer.sendToTopic(JSON.toJSONString(switchMap));
+        if (flag) {
+            int i = deviceMapper.updateDeviceState(state, serviceId);
+            if (i > 0) result.setCode(1);
+        }
         return result;
     }
 
