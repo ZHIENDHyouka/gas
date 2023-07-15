@@ -14,6 +14,9 @@
     <insert id="addHarmfulGasDateTest">
         insert into harmful_gas(g_name,g_data,g_indate,g_device_id) values (#{gas.gasName},#{gas.gasData},#{gas.indate},#{gas.deviceId})
     </insert>
+    <insert id="addHarmfulGasData">
+        insert into harmful_gas(g_name,g_data,g_indate,g_device_id) values (#{gas.gasName},#{gas.gasData},#{gas.indate},#{gas.deviceId})
+    </insert>
     <select id="queryConditionData" resultMap="harmfulGasMap">
         select *
         from harmful_gas

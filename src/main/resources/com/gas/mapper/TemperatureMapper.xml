@@ -12,6 +12,9 @@
     <insert id="addTemperatureDateTest">
         insert into temperature(t_data,t_indate,t_device_id) values (#{temperature.temperatureDate},#{temperature.indate},#{temperature.deivceId})
     </insert>
+    <insert id="addTemperatureData">
+        insert into temperature(t_data,t_indate,t_device_id) values (#{temperature.temperatureDate},#{temperature.indate},#{temperature.deivceId})
+    </insert>
     <select id="queryAllTemperatureInfo" resultMap="temperatureMap">
         select * from temperature ORDER BY t_indate desc
     </select>

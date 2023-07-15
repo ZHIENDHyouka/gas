@@ -12,6 +12,9 @@
     <insert id="addHumidityDateTest">
         insert into humidity(h_data,h_indate,h_device_id) values (#{humidity.humidityDate},#{humidity.indate},#{humidity.deviceId})
     </insert>
+    <insert id="addHumidityData">
+        insert into humidity(h_data,h_indate,h_device_id) values (#{humidity.humidityDate},#{humidity.indate},#{humidity.deviceId})
+    </insert>
     <select id="queryConditionData" resultMap="humidityMap">
         select *
         from humidity

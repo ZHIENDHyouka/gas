@@ -13,6 +13,8 @@ import java.util.Map;
 public interface HarmfulGasMapper {
     int addHarmfulGasDateTest(@Param("gas")HarmfulGas gas);
 
+    int addHarmfulGasData(@Param("gas")HarmfulGas gas);
+
     List<HarmfulGas> queryConditionData(@Param("sdateTime")String startDateTime,
                                         @Param("edateTime")String endDateTime,
                                         @Param("deviceId")String deviceId,

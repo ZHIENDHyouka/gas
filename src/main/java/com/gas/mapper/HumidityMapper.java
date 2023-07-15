@@ -11,6 +11,8 @@ import java.util.List;
 public interface HumidityMapper {
     int addHumidityDateTest(@Param("humidity") Humidity humidity);
 
+    int addHumidityData(@Param("humidity") Humidity humidity);
+
     List<Humidity> queryConditionData(@Param("sdateTime")String startDateTime, @Param("edateTime")String endDateTime, @Param("deviceId")String deviceId);
 
     Humidity queryRealTimeHumidityByDeviceId(@Param("deviceId") String deviceId);

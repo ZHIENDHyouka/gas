@@ -81,4 +81,15 @@ public class DateTimeUtil {
     public static long getStringTimeStamp(String datetime,String format){
         return stringTransformLocalDateTime(datetime,format).toInstant(ZoneOffset.of("+8")).toEpochMilli();
     }
+
+    /**
+     * 时间戳转string
+     * @param timeStamp
+     * @param transFormat
+     * @return
+     */
+    public static String timeStampTransformString(long timeStamp,String transFormat){
+        Instant instant = Instant.ofEpochMilli(timeStamp);
+        return getLocalDateTimeFormat(LocalDateTime.ofInstant(instant, ZoneId.systemDefault()),transFormat);
+    }
 }

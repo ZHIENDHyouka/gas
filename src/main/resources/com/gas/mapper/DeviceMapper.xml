@@ -12,6 +12,9 @@
     <insert id="addDeviceDataTest">
         insert into device(d_name) VALUES(#{device.deviceName})
     </insert>
+    <insert id="addDevice">
+        insert into device(d_name) VALUES(#{device.deviceName})
+    </insert>
     <update id="updateDeviceState">
         update device set d_status=#{state} where d_id=#{serviceId}
     </update>
