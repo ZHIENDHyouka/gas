@@ -45,7 +45,8 @@ public class AppService {
                 return new ResultVO(code, null, "无法登陆!");
             }
             code = 1;
-            return new ResultVO(code, null, "登陆成功!");
+            checkInfo.setPassword("");
+            return new ResultVO(code, checkInfo, "登陆成功!");
 
         } else {
             return new ResultVO(code, null, "用户不存在,请注册!");
