@@ -26,7 +26,7 @@
         SELECT count(d_id) from device where d_status=1
     </select>
     <select id="getAllDeviceInfo" resultMap="deviceMap">
-        select * from device
+        select * from device order by d_name desc
     </select>
     <select id="getDeviceInfoByStatus" resultMap="deviceMap">
         select *

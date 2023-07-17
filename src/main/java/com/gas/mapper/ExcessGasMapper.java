@@ -22,4 +22,7 @@ public interface ExcessGasMapper {
     int queryDayAllAlarmNumber(@Param("datetime")String datetime);
 
     List<ExcessGas> queryDayAllAlarmData(@Param("datetime")String datetime);
+
+    @MapKey("e_id")
+    List<Map<String,Object>> queryDeviceAlarmByStart(@Param("datetime")String datetime);
 }

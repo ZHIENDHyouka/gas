@@ -19,4 +19,7 @@ public interface ManagerMapper {
     List<Manager>queryLikeName(@Param("name")String name);
 
     List<Manager>queryStatus(@Param("status") int status);
+
+    Manager queryUsernameByLevel(@Param("username")String username,@Param("level")int level);
+
 }

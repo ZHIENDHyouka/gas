@@ -31,18 +31,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 //@Component
 public class AmqpClient {
-//    @Autowired
-//    @Qualifier("deviceNameList")
-//    private List<Device> deviceNameList;
-//    @Autowired
-//    private DeviceMapper deviceMapper;
-//    @Autowired
-//    private HarmfulGasMapper harmfulGasMapper;
-//    @Autowired
-//    private TemperatureMapper temperatureMapper;
-//    @Autowired
-//    private HumidityMapper humidityMapper;
-
     private final static Logger logger = LoggerFactory.getLogger(AmqpClient.class);
     private static String accessKey = "LTAI5tC8zq314HFEB4b39rSh";
     private static String accessSecret = "uQemdHk8E7tj1g77bYycJdwJcKKxP7";
@@ -227,7 +215,7 @@ public class AmqpClient {
          */
         @Override
         public void onConnectionFailure(Throwable error) {
-            logger.error("onConnectionFailure, {}", error.getMessage());
+            logger.error("无法接入云平台!", error.getMessage());
         }
 
         /**
@@ -235,7 +223,7 @@ public class AmqpClient {
          */
         @Override
         public void onConnectionInterrupted(URI remoteURI) {
-            logger.info("onConnectionInterrupted, remoteUri:{}", remoteURI);
+            logger.info("连接中断！", remoteURI);
         }
 
         /**
@@ -243,7 +231,7 @@ public class AmqpClient {
          */
         @Override
         public void onConnectionRestored(URI remoteURI) {
-            logger.info("onConnectionRestored, remoteUri:{}", remoteURI);
+            logger.info("重新连接成功！", remoteURI);
         }
 
         @Override

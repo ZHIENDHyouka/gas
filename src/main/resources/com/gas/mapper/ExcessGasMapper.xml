@@ -46,4 +46,7 @@
         select *
         from excess_gas  WHERE indatetime>=#{datetime} ORDER BY indatetime desc;
     </select>
+    <select id="queryDeviceAlarmByStart" resultType="java.util.Map">
+        SELECT count(e_id) as number ,device_id as deviceName FROM `excess_gas` WHERE indatetime>=#{datetime} GROUP BY device_id
+    </select>
 </mapper>
