@@ -6,6 +6,7 @@ import com.gas.entity.Humidity;
 import com.gas.entity.ResultVO;
 import com.gas.entity.Temperature;
 import com.gas.mapper.*;
+import com.gas.service.AppService;
 import com.gas.service.DeivceService;
 import com.gas.utils.CreateDataUtils;
 import com.gas.utils.DateTimeUtil;
@@ -80,6 +81,10 @@ public class WebSocket {
         return SpringContext.getBean(HarmfulGasMapper.class);
     }
 
+    private AppService getAppService(){
+        return SpringContext.getBean(AppService.class);
+    }
+
     /**
      * 连接建立成功调用的方法
      *
@@ -139,6 +144,9 @@ public class WebSocket {
                 result.put("data",excessGases);
                 sendMessage(JSON.toJSONString(result));
             }
+        } else if ("4".equals(code)){
+            String s = this.updateAppRealTimeData();
+            sendMessage(s);
         }
 //        this.sendMessage(message);
 //        for (WebSocket item : webSocketSet) {
@@ -275,5 +283,15 @@ public class WebSocket {
         date += " 00:00:00";
         int number = getExcessGasMapper().queryDayAllAlarmNumber(date);
         return JSON.toJSONString(number);
+    }
+
+    private String updateAppRealTimeData(){
+        List<Map<String,Object>> data = (List<Map<String,Object>>)getAppService().getGasNameAndNewData().getData();
+        Random random = new Random();
+        for (Map m: data) {
+            double v = Double.parseDouble(m.get("data").toString()) + random.nextInt(10);
+            m.put("data",v);
+        }
+        return JSON.toJSONString(data);
     }
 }

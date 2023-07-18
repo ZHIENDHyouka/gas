@@ -25,4 +25,6 @@ public interface HarmfulGasMapper {
                                                       @Param("deviceId")String deviceId);
     @MapKey("g_name")
     List<Map<String,Object>> queryHarmfulGasAvgData(@Param("start")String start,@Param("end")String end);
+
+    List<Humidity> queryNewData(@Param("name")String name);
 }

@@ -15,4 +15,8 @@
         select db_table
         from gas where name=#{name};
     </select>
+    <select id="queryAllInfo" resultMap="gasMap">
+        select *
+        from gas;
+    </select>
 </mapper>

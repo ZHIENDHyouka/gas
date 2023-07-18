@@ -19,4 +19,9 @@ public interface StatisticMapper {
                                           @Param("gasName")String gasName,
                                           @Param("dataColumn")String data,
                                           @Param("indateColumn")String indate);
+    @MapKey("id")
+    List<Map<String,Object>> queryNewGasData(@Param("table")String tableName,
+                                             @Param("gasName")String gasName,
+                                             @Param("id") String id,
+                                             @Param("dataColumn")String dataColumn);
 }

@@ -92,4 +92,17 @@ public class DateTimeUtil {
         Instant instant = Instant.ofEpochMilli(timeStamp);
         return getLocalDateTimeFormat(LocalDateTime.ofInstant(instant, ZoneId.systemDefault()),transFormat);
     }
+
+    /**
+     * 加上时间戳的时间  DATETIMEFORMAT格式
+     * @param datetime
+     * @param timeStamp
+     * @return
+     */
+    public static String addTimeStamp(String datetime,long timeStamp){
+        long stringTimeStamp = getStringTimeStamp(datetime, DATETIMEFORMAT);
+        stringTimeStamp+=timeStamp;
+        return timeStampTransformString(stringTimeStamp, DATETIMEFORMAT);
+
+    }
 }

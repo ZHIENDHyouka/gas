@@ -25,4 +25,6 @@ public class StatisticController {
         ResultVO statisticData = statisticService.getStatisticData(param);
         return statisticData;
     }
+
+
 }

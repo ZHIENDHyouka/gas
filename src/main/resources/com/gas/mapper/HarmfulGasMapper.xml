@@ -44,4 +44,8 @@
         SELECT round(avg(g_data),2) as avg,g_name as gasName from harmful_gas WHERE
         g_indate &gt;#{start} and g_indate &lt;=#{end} GROUP BY g_name
     </select>
+    <select id="queryNewData" resultType="com.gas.entity.Humidity">
+        select *
+        from harmful_gas where g_name = #{name},order by g_id desc limit 0,1;
+    </select>
 </mapper>

@@ -12,4 +12,6 @@ public interface GasMapper {
 
     Gas queryGasDBTable(@Param("name")String gasName);
 
+    List<Gas> queryAllInfo();
+
 }
