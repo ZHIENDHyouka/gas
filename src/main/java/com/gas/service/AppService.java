@@ -7,6 +7,7 @@ import com.gas.utils.Md5Util;
 import javafx.scene.input.Mnemonic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -26,6 +27,9 @@ public class AppService {
     private StatisticMapper statisticMapper;
     @Autowired
     private GasMapper gasMapper;
+
+    @Autowired
+    private FeedbackMapper feedbackMapper;
 
     public ResultVO appLogin(Manager manager) {
         String username = manager.getUsername();
@@ -185,6 +189,11 @@ public class AppService {
     //求平均数
     private Double getGasListAverage(List<Double> dataList) {
         return dataList.stream().mapToDouble(Double::doubleValue).average().getAsDouble();
+    }
+
+    public ResultVO getFeedbackAllInfo(Integer id) {
+        List<Device> allFeedbackInfo = feedbackMapper.getFeedbackAllInfo(id);
+        return new ResultVO(1,allFeedbackInfo,"数据获取成功");
     }
 
 }

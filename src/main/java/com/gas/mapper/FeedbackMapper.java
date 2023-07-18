@@ -1,6 +1,7 @@
 package com.gas.mapper;
 
 
+import com.gas.entity.Device;
 import com.gas.entity.Feedback;
 import org.springframework.stereotype.Repository;
 
@@ -20,5 +21,7 @@ public interface FeedbackMapper {
     List<Feedback> getAllFeedbackList();
 
     int updateFeedbackInfo(Integer id);
+
+    List<Device> getFeedbackAllInfo(Integer id);
 }
 

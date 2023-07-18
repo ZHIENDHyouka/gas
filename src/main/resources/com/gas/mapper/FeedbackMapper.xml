@@ -11,18 +11,27 @@
         <result property="status" column="status" jdbcType="INTEGER"/>
     </resultMap>
     <insert id="addFeedback" parameterType="com.gas.entity.Feedback">
-        insert into feedback(user_id,user_name,submit_time,problem_describe)
-        values (#{userId},#{userName},#{submitTime},#{problemDescribe})
+        insert into feedback(user_id, user_name, submit_time, problem_describe)
+        values (#{userId}, #{userName}, #{submitTime}, #{problemDescribe})
     </insert>
 
     <update id="updateFeedbackInfo">
-        update feedback set status=1 where id=#{id}
+        update feedback
+        set status=1
+        where id = #{id}
     </update>
 
     <select id="getAllFeedbackList" resultMap="feedbackMap">
-        select id,user_id,user_name,submit_time,problem_describe,status
+        select id, user_id, user_name, submit_time, problem_describe, status
         from feedback
-        order by `status` asc ,submit_time desc
+        order by `status` asc, submit_time desc
+    </select>
+    <select id="getFeedbackAllInfo" resultMap="feedbackMap">
+        select id, user_id, submit_time, problem_describe
+        from feedback
+        where user_id = #{id}
+          and status = 0
+        order by submit_time desc
     </select>
 
 

@@ -43,4 +43,9 @@ public class AppController {
         String name = map.get("name").toString();
         return appService.getStatisticInitData(name);
     }
+    @GetMapping("/getFeedbackAllInfo/{userId}")
+    public ResultVO getFeedbackAllInfo(@PathVariable("userId") Integer id){
+        ResultVO feedbackAllInfo = appService.getFeedbackAllInfo(id);
+        return feedbackAllInfo;
+    }
 }
