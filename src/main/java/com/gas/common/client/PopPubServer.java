@@ -12,7 +12,6 @@ import com.google.gson.Gson;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Map;

@@ -9,11 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class AppService {
@@ -167,6 +166,8 @@ public class AppService {
         ArrayList<Double> calcList = new ArrayList<>();
         ArrayList<Map<String, Object>> result = new ArrayList<>();
         DecimalFormat decimalFormat = new DecimalFormat("0.0000");
+
+        int count = 0;
         for (Map<String, Object> map : maps) {
             String datetime = map.get(indateColumn).toString();
             Double data = Double.parseDouble(map.get(dataColumn).toString());
@@ -180,8 +181,14 @@ public class AppService {
                 start = DateTimeUtil.addTimeStamp(start, 1000 * 60 * 60);
                 calcList.clear();
                 result.add(hoursData);
+                String s = maps.get(count + 1).get(indateColumn).toString();
+                if (s.compareTo(startInterval)>=0){
+                    count++;
+                    continue;
+                }
             }
             calcList.add(data);
+            count++;
         }
         return new ResultVO(1, result, "");
     }
