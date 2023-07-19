@@ -139,58 +139,61 @@ public class AppService {
     }
 
     public ResultVO getStatisticInitData(String name) {
-        Gas gas = gasMapper.queryGasDBTable(name);
-        String gasName = null;
+        if (!"".equals(name)) {
+            Gas gas = gasMapper.queryGasDBTable(name);
+            String gasName = null;
 //        String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
-        String now = "2023-07-11 15:43:29";
-        long timeStamp = DateTimeUtil.getStringTimeStamp(now, DateTimeUtil.DATETIMEFORMAT);
-        timeStamp -= 1000 * 60 * 60 * 12;
-        String start = DateTimeUtil.timeStampTransformString(timeStamp, DateTimeUtil.DATETIMEFORMAT);
-        if (!("温度".equals(name) || "湿度".equals(name))) {
-            gasName = name;
-        }
-        String dataColumn = "";
-        String indateColumn = "";
-        if ("温度".equals(name)) {
-            dataColumn = "t_data";
-            indateColumn = "t_indate";
-        } else if ("湿度".equals(name)) {
-            dataColumn = "h_data";
-            indateColumn = "h_indate";
-        } else {
-            dataColumn = "g_data";
-            indateColumn = "g_indate";
-        }
-        String startInterval = DateTimeUtil.addTimeStamp(start, 1000 * 60 * 60);
-        List<Map<String, Object>> maps = statisticMapper.queryGasDate(gas.getTableName(), start, now, gasName, dataColumn, indateColumn);
-        ArrayList<Double> calcList = new ArrayList<>();
-        ArrayList<Map<String, Object>> result = new ArrayList<>();
-        DecimalFormat decimalFormat = new DecimalFormat("0.0000");
-
-        int count = 0;
-        for (Map<String, Object> map : maps) {
-            String datetime = map.get(indateColumn).toString();
-            Double data = Double.parseDouble(map.get(dataColumn).toString());
-            if (datetime.compareTo(startInterval) >= 0) {
-                startInterval = DateTimeUtil.addTimeStamp(start, 1000 * 60 * 60);
-                HashMap<String, Object> hoursData = new HashMap<>();
-                Double avg = calcList.size() > 0 ? getGasListAverage(calcList) : 0.0;
-                avg = Double.parseDouble(decimalFormat.format(avg));
-                hoursData.put("data", avg);
-                hoursData.put("date", start);
-                start = DateTimeUtil.addTimeStamp(start, 1000 * 60 * 60);
-                calcList.clear();
-                result.add(hoursData);
-                String s = maps.get(count + 1).get(indateColumn).toString();
-                if (s.compareTo(startInterval)>=0){
-                    count++;
-                    continue;
-                }
+            String now = "2023-07-11 15:43:29";
+            long timeStamp = DateTimeUtil.getStringTimeStamp(now, DateTimeUtil.DATETIMEFORMAT);
+            timeStamp -= 1000 * 60 * 60 * 12;
+            String start = DateTimeUtil.timeStampTransformString(timeStamp, DateTimeUtil.DATETIMEFORMAT);
+            if (!("温度".equals(name) || "湿度".equals(name))) {
+                gasName = name;
             }
-            calcList.add(data);
-            count++;
+            String dataColumn = "";
+            String indateColumn = "";
+            if ("温度".equals(name)) {
+                dataColumn = "t_data";
+                indateColumn = "t_indate";
+            } else if ("湿度".equals(name)) {
+                dataColumn = "h_data";
+                indateColumn = "h_indate";
+            } else {
+                dataColumn = "g_data";
+                indateColumn = "g_indate";
+            }
+            String startInterval = DateTimeUtil.addTimeStamp(start, 1000 * 60 * 60);
+            List<Map<String, Object>> maps = statisticMapper.queryGasDate(gas.getTableName(), start, now, gasName, dataColumn, indateColumn);
+            ArrayList<Double> calcList = new ArrayList<>();
+            ArrayList<Map<String, Object>> result = new ArrayList<>();
+            DecimalFormat decimalFormat = new DecimalFormat("0.0000");
+
+            int count = 0;
+            for (Map<String, Object> map : maps) {
+                String datetime = map.get(indateColumn).toString();
+                Double data = Double.parseDouble(map.get(dataColumn).toString());
+                if (datetime.compareTo(startInterval) >= 0) {
+                    startInterval = DateTimeUtil.addTimeStamp(start, 1000 * 60 * 60);
+                    HashMap<String, Object> hoursData = new HashMap<>();
+                    Double avg = calcList.size() > 0 ? getGasListAverage(calcList) : 0.0;
+                    avg = Double.parseDouble(decimalFormat.format(avg));
+                    hoursData.put("data", avg);
+                    hoursData.put("date", start);
+                    start = DateTimeUtil.addTimeStamp(start, 1000 * 60 * 60);
+                    calcList.clear();
+                    result.add(hoursData);
+                    String s = maps.get(count + 1).get(indateColumn).toString();
+                    if (s.compareTo(startInterval) >= 0) {
+                        count++;
+                        continue;
+                    }
+                }
+                calcList.add(data);
+                count++;
+            }
+            return new ResultVO(1, result, name);
         }
-        return new ResultVO(1, result, "");
+        return null;
     }
 
     //求平均数

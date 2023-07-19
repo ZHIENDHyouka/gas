@@ -14,6 +14,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
+
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
@@ -25,7 +26,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-@ServerEndpoint(value = "/webSocket")//主要是将目前的类定义成一个websocket服务器端, 注解的值将被用于监听用户连接的终端访问URL地址,客户端可以通过这个URL来连接到WebSocket服务器端
+@ServerEndpoint(value = "/webSocket")
+//主要是将目前的类定义成一个websocket服务器端, 注解的值将被用于监听用户连接的终端访问URL地址,客户端可以通过这个URL来连接到WebSocket服务器端
 @Component
 @EnableScheduling// cron定时任务
 @Data
@@ -60,28 +62,28 @@ public class WebSocket {
         return deviceMapper;
     }
 
-    private TemperatureMapper getTemperatureMapper(){
+    private TemperatureMapper getTemperatureMapper() {
         TemperatureMapper temperatureMapper = SpringContext.getBean(TemperatureMapper.class);
         return temperatureMapper;
     }
 
-    private DeivceService getDeivceService(){
+    private DeivceService getDeivceService() {
         return SpringContext.getBean(DeivceService.class);
     }
 
-    private ExcessGasMapper getExcessGasMapper(){
+    private ExcessGasMapper getExcessGasMapper() {
         return SpringContext.getBean(ExcessGasMapper.class);
     }
 
-    private HumidityMapper getHumidityMapper(){
+    private HumidityMapper getHumidityMapper() {
         return SpringContext.getBean(HumidityMapper.class);
     }
 
-    private HarmfulGasMapper getHarmfulGasMapper(){
+    private HarmfulGasMapper getHarmfulGasMapper() {
         return SpringContext.getBean(HarmfulGasMapper.class);
     }
 
-    private AppService getAppService(){
+    private AppService getAppService() {
         return SpringContext.getBean(AppService.class);
     }
 
@@ -115,14 +117,14 @@ public class WebSocket {
             String temperatureData = this.updateTemperatureData();
             String humidityData = this.updateHumidityData();
             String HarmfulGasData = this.updateHarmfulGas();
-            sendMap.put("code",1);
-            sendMap.put("deviceNumberData",deviceNumberData);
-            sendMap.put("alarmInfoData",alarmInfoData);
-            sendMap.put("temperatureData",temperatureData);
-            sendMap.put("humidityData",humidityData);
-            sendMap.put("HarmfulGasData",HarmfulGasData);
+            sendMap.put("code", 1);
+            sendMap.put("deviceNumberData", deviceNumberData);
+            sendMap.put("alarmInfoData", alarmInfoData);
+            sendMap.put("temperatureData", temperatureData);
+            sendMap.put("humidityData", humidityData);
+            sendMap.put("HarmfulGasData", HarmfulGasData);
             sendMessage(JSON.toJSONString(sendMap));
-        }else if ("2".equals(code)){
+        } else if ("2".equals(code)) {
             //报警信息数量
             HashMap<String, Object> result = new HashMap<>();
             String alarmNumber = this.updateDayAlarmInfoNumber();
@@ -131,7 +133,7 @@ public class WebSocket {
                 result.put("alarmNumber", alarmNumber);
                 sendMessage(JSON.toJSONString(result));
             }
-        }else if ("3".equals(code)){
+        } else if ("3".equals(code)) {
             //报警数据
             Integer number = (Integer) map.get("data");
             String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
@@ -139,13 +141,13 @@ public class WebSocket {
             date += " 00:00:00";
             List<ExcessGas> excessGases = getExcessGasMapper().queryDayAllAlarmData(date);
             HashMap<String, Object> result = new HashMap<>();
-            if (!(number==excessGases.size())){
-                result.put("code",3);
-                result.put("data",excessGases);
+            if (!(number == excessGases.size())) {
+                result.put("code", 3);
+                result.put("data", excessGases);
                 sendMessage(JSON.toJSONString(result));
             }
-        } else if ("4".equals(code)){
-            String s = this.updateAppRealTimeData();
+        } else if ("4".equals(code)) {
+            String s = this.updateAppRealTimeData(map);
             sendMessage(s);
         }
 //        this.sendMessage(message);
@@ -190,6 +192,7 @@ public class WebSocket {
     /**
      * 发送信息
      * 单发
+     *
      * @param message 消息
      */
     public void sendMessage(String message) throws IOException {
@@ -198,6 +201,7 @@ public class WebSocket {
 
     /**
      * 群发
+     *
      * @param message 消息
      */
     public static void sendInfo(String message) throws IOException {
@@ -207,8 +211,8 @@ public class WebSocket {
         }
     }
 
-    private String updateDeviceNumber(){
-        String s= null;
+    private String updateDeviceNumber() {
+        String s = null;
         try {
             DeviceMapper deviceMapper = getDeviceMapper();
             RecordDeviceNumberMapper recordDeviceNumberMapper = getRecordDeviceNumberMapper();
@@ -223,7 +227,7 @@ public class WebSocket {
         return s;
     }
 
-    private String updateAlarmInfoNumber(){
+    private String updateAlarmInfoNumber() {
         try {
             ExcessGasMapper excessGasMapper = getExcessGasMapper();
             Random random = new Random();
@@ -234,7 +238,7 @@ public class WebSocket {
                     DateTimeUtil.getLocalDateTimeFormat(LocalDateTime.now().minusSeconds(2),
                             DateTimeUtil.DATETIMEFORMAT));
             HashMap<String, Object> alarmInfoMap = new HashMap<>();
-            alarmInfoMap.put("number",number);
+            alarmInfoMap.put("number", number);
             alarmInfoMap.put("datetime", DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT).split(" ")[1]);
             return JSON.toJSONString(alarmInfoMap);
         } catch (Exception e) {
@@ -243,9 +247,9 @@ public class WebSocket {
         return null;
     }
 
-    private String  updateTemperatureData(){
+    private String updateTemperatureData() {
         String deviceId = "22SI-09DG-63KJ";//测试数据
-        double value = new Random().nextDouble()*60-new Random().nextDouble()*10;
+        double value = new Random().nextDouble() * 60 - new Random().nextDouble() * 10;
         String format = new DecimalFormat("#.00").format(value);
         int i = getTemperatureMapper().addTemperatureDateTest(new Temperature(0, Double.parseDouble(format),
                 DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT), deviceId));
@@ -253,7 +257,7 @@ public class WebSocket {
         return JSON.toJSONString(temperature.getTemperatureDate());
     }
 
-    private String updateHumidityData(){
+    private String updateHumidityData() {
         String deviceId = "22SI-09DG-63KJ";//测试数据
         double value = new Random().nextDouble();
         String format = new DecimalFormat("#.00").format(value);
@@ -263,8 +267,8 @@ public class WebSocket {
         return JSON.toJSONString(humidity.getHumidityDate());
     }
 
-    private String updateHarmfulGas(){
-        String id= "22SI-09DG-63KJ";
+    private String updateHarmfulGas() {
+        String id = "22SI-09DG-63KJ";
         CreateDataUtils.createHarmFulGas(50);
         String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
         List<Map<String, Object>> maps = getHarmfulGasMapper().queryRealTimeHarmfulGas(
@@ -272,12 +276,12 @@ public class WebSocket {
                 now,
                 id);
         HashMap<String, Object> result = new HashMap<>();
-        result.put("data",maps);
-        result.put("datetime",now.split(" ")[1]);
+        result.put("data", maps);
+        result.put("datetime", now.split(" ")[1]);
         return JSON.toJSONString(result);
     }
 
-    private String updateDayAlarmInfoNumber(){
+    private String updateDayAlarmInfoNumber() {
         String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
         String date = now.split(" ")[0];
         date += " 00:00:00";
@@ -285,13 +289,24 @@ public class WebSocket {
         return JSON.toJSONString(number);
     }
 
-    private String updateAppRealTimeData(){
-        List<Map<String,Object>> data = (List<Map<String,Object>>)getAppService().getGasNameAndNewData().getData();
-        Random random = new Random();
-        for (Map m: data) {
-            double v = Double.parseDouble(m.get("data").toString()) + random.nextInt(10);
-            m.put("data",v);
+    private String updateAppRealTimeData(Map map) {
+        HashMap<String, Object> result = new HashMap<>();
+        List<Map<String, Object>> data = (List<Map<String, Object>>) getAppService().getGasNameAndNewData().getData();
+        ResultVO statisticInitData = null;
+        Object o = null;
+        if (map.get("data") != null && !"".equals(map.get("data").toString())) {
+            String name = map.get("data").toString();
+            statisticInitData = getAppService().getStatisticInitData(name);
+            List statistic = (List) statisticInitData.getData();
+            o = statistic.get(statistic.size() - 1);
         }
-        return JSON.toJSONString(data);
+        Random random = new Random();
+        for (Map m : data) {
+            double v = Double.parseDouble(m.get("data").toString()) + random.nextInt(10);
+            m.put("data", v);
+        }
+        result.put("realTimeData", data);
+        result.put("realTimeStatistic", o);
+        return JSON.toJSONString(result);
     }
 }
