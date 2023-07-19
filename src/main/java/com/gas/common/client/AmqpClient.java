@@ -35,13 +35,17 @@ public class AmqpClient {
     private static String accessKey = "LTAI5tC8zq314HFEB4b39rSh";
     private static String accessSecret = "uQemdHk8E7tj1g77bYycJdwJcKKxP7";
     private static String consumerGroupId = "4sqWAPEVNfL7IrlmRFnS000100";
-    private static String iotInstanceId = "iot-06z00j7csd6edmj" ;
+    private static String iotInstanceId = "iot-06z00j7csd6edmj";
     private static String clientId = "123";
     private static String host = "iot-06z00j7csd6edmj.amqp.iothub.aliyuncs.com";
     private static int connectionCount = 10;
 
     private static List<Device> deviceNameList = SpringContext.getBean("deviceNameList", List.class);
+//    private static List<CriticalValue> criticalValueList = SpringContext.getBean("criticalValueList", List.class);
     private static boolean isExistConnection = false;
+    private static Lock lock = new ReentrantLock(true);//创建一个公平锁
+
+
 
     //业务处理异步线程池，
     private final static ExecutorService executorService = new ThreadPoolExecutor(
@@ -51,7 +55,7 @@ public class AmqpClient {
 
     public static void subscribe() {
         List<Connection> connections = new ArrayList<>();
-        int realConnectionCount=connectionCount;
+        int realConnectionCount = connectionCount;
         for (int i = 0; i < connectionCount; i++) {
             long timeStamp = System.currentTimeMillis();
             //签名方法：支持hmacmd5、hmacsha1和hmacsha256。
@@ -64,7 +68,7 @@ public class AmqpClient {
                     + ",iotInstanceId=" + iotInstanceId
                     + ",consumerGroupId=" + consumerGroupId
                     + "|";
-            Connection connection=null;
+            Connection connection = null;
             try {
                 //计算签名，password组装方法
                 String signContent = "authId=" + accessKey + "&timestamp=" + timeStamp;
@@ -77,13 +81,13 @@ public class AmqpClient {
                 hashtable.put("queue.QUEUE", "default");
                 hashtable.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.qpid.jms.jndi.JmsInitialContextFactory");
                 Context context = new InitialContext(hashtable);
-                ConnectionFactory cf = (ConnectionFactory)context.lookup("SBCF");
-                Destination queue = (Destination)context.lookup("QUEUE");
+                ConnectionFactory cf = (ConnectionFactory) context.lookup("SBCF");
+                Destination queue = (Destination) context.lookup("QUEUE");
                 // 创建连接。
                 connection = cf.createConnection(userName, password);
                 connections.add(connection);
 
-                ((JmsConnection)connection).addConnectionListener(myJmsConnectionListener);
+                ((JmsConnection) connection).addConnectionListener(myJmsConnectionListener);
                 // 创建会话。
                 // Session.AUTO_ACKNOWLEDGE: SDK自动ACK
                 Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
@@ -92,9 +96,9 @@ public class AmqpClient {
                 MessageConsumer consumer = session.createConsumer(queue);
                 consumer.setMessageListener(messageListener);
             } catch (Exception e) {
-                logger.error("第"+(i+1)+"个连接创建出现错误!");
+                logger.error("第" + (i + 1) + "个连接创建出现错误!");
                 realConnectionCount--;
-                if (connection!=null){
+                if (connection != null) {
                     try {
                         connection.close();
                     } catch (JMSException f) {
@@ -103,13 +107,13 @@ public class AmqpClient {
                 }
             }
         }
-        logger.info(("目标连接数:"+connectionCount+",实际连接数:"+realConnectionCount));
-        if (realConnectionCount>0) logger.info("连接成功!!");
-        if (realConnectionCount==0){
+        logger.info(("目标连接数:" + connectionCount + ",实际连接数:" + realConnectionCount));
+        if (realConnectionCount > 0) logger.info("连接成功!!");
+        if (realConnectionCount == 0) {
             //关闭异步请求服务
-            if (executorService!=null)
+            if (executorService != null)
                 executorService.shutdown();
-        }else {
+        } else {
             isExistConnection = true;
         }
     }
@@ -144,8 +148,7 @@ public class AmqpClient {
         try {
             byte[] body = message.getBody(byte[].class);
             String content = new String(body);
-            Map<String,Object> map = JSON.parseObject(content, Map.class);
-            Lock lock = new ReentrantLock(true);//创建一个公平锁
+            Map<String, Object> map = JSON.parseObject(content, Map.class);
             //获取设备名称
             String deviceName = map.get("deviceName").toString();
             try {
@@ -168,32 +171,58 @@ public class AmqpClient {
                 //释放锁
                 lock.unlock();
             }
-
+            final String[] gasName=new String[1];
+            String type = "";
             //数据入库
             //后续如果插入数量大需要批量插入
 //            CopyOnWriteArrayList<Temperature> inserTemperatures = new CopyOnWriteArrayList<Temperature>;
-            Map<String,Object>dataMap = ((Map<String, Object>) map.get("items"));
+            Map<String, Object> dataMap = ((Map<String, Object>) map.get("items"));
             for (String key : dataMap.keySet()) {
-                Map<String,Object> gasMap = (Map<String,Object>)dataMap.get(key);
-                Double value = Double.valueOf(gasMap.get("value").toString()) ;
-                long timeStamp = (long)gasMap.get("time");
+                Map<String, Object> gasMap = (Map<String, Object>) dataMap.get(key);
+                Double value = Double.valueOf(gasMap.get("value").toString());
+                long timeStamp = (long) gasMap.get("time");
                 String datetimeFormat = DateTimeUtil.timeStampTransformString(timeStamp, DateTimeUtil.DATETIMEFORMAT);
+                if ("temperature".equals(key)) {
+                    gasName[0] = "温度";
+                    type = "温度";
+                    int i = SpringContext.getBean(TemperatureMapper.class).addTemperatureData(new Temperature(0, value, datetimeFormat, deviceName));
+                    if (i > 0) logger.info("数据插入成功!温度");
+                    else logger.info("数据插入失败!");
+                } else if ("humidity".equals(key)) {
+                    gasName[0] = "湿度";
+                    type = "湿度";
+                    int i = SpringContext.getBean(HumidityMapper.class).addHumidityData(new Humidity(0, value, datetimeFormat, deviceName));
+                    if (i > 0) logger.info("数据插入成功!湿度");
+                    else logger.info("数据插入失败!");
+                } else {
+                    if ("PM25".equals(key)){
+                        key="PM2.5";
+                    }
+                    gasName[0] = key;
+                    type = "有害气体";
+                    int i = SpringContext.getBean(HarmfulGasMapper.class).addHarmfulGasData(new HarmfulGas(0, key, value, datetimeFormat, deviceName));
+                    if (i > 0) logger.info("数据插入成功!" + key);
+                    else logger.info("数据插入失败!");
+                }
                 try {
-                    if ("temperature".equals(key)){
-                        int i = SpringContext.getBean(TemperatureMapper.class).addTemperatureData(new Temperature(0, value, datetimeFormat, deviceName));
-                        if (i>0) logger.info("数据插入成功!温度");
-                        else logger.info("数据插入失败!");
-                    }else if ("humidity".equals(key)){
-                        int i = SpringContext.getBean(HumidityMapper.class).addHumidityData(new Humidity(0, value, datetimeFormat, deviceName));
-                        if (i>0) logger.info("数据插入成功!湿度");
-                        else logger.info("数据插入失败!");
-                    }else {
-                        int i = SpringContext.getBean(HarmfulGasMapper.class).addHarmfulGasData(new HarmfulGas(0, key, value, datetimeFormat, deviceName));
-                        if (i>0) logger.info("数据插入成功!"+key);
-                        else logger.info("数据插入失败!");
+                    //上锁
+                    lock.lock();
+                    //获取对应的阈值判断数据
+                    List<CriticalValue> criticalValueList = SpringContext.getBean("criticalValueList", List.class);
+                    CriticalValue criticalValue = criticalValueList.stream().filter(critical -> gasName[0].equals(critical.getName())).findAny().orElse(null);
+                    //判断数值是否超标
+                    double lowerLimit = Double.parseDouble(criticalValue.getLowerLimit());
+                    double upperLimit = Double.parseDouble(criticalValue.getUpperLimit());
+                    if (!(lowerLimit <= value && upperLimit >= value)) {
+                        ExcessGasMapper excessGasMapper = SpringContext.getBean(ExcessGasMapper.class);
+                        excessGasMapper.insertAlarmGasInfo(new ExcessGas(0, gasName[0], value.toString(), type, datetimeFormat, deviceName));
+                        logger.info("报警信息插入成功!");
                     }
                 } catch (Exception e) {
-                    logger.info("数据插入失败!");
+                    logger.info("报警数据插入失败!");
+                }
+                finally {
+                    lock.unlock();
                 }
             }
         } catch (Exception e) {
@@ -235,16 +264,20 @@ public class AmqpClient {
         }
 
         @Override
-        public void onInboundMessage(JmsInboundMessageDispatch envelope) {}
+        public void onInboundMessage(JmsInboundMessageDispatch envelope) {
+        }
 
         @Override
-        public void onSessionClosed(Session session, Throwable cause) {}
+        public void onSessionClosed(Session session, Throwable cause) {
+        }
 
         @Override
-        public void onConsumerClosed(MessageConsumer consumer, Throwable cause) {}
+        public void onConsumerClosed(MessageConsumer consumer, Throwable cause) {
+        }
 
         @Override
-        public void onProducerClosed(MessageProducer producer, Throwable cause) {}
+        public void onProducerClosed(MessageProducer producer, Throwable cause) {
+        }
     };
 
     /**

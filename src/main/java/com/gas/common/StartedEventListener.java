@@ -18,6 +18,6 @@ public class StartedEventListener implements ApplicationListener<ApplicationStar
     @Override
     public void onApplicationEvent(ApplicationStartedEvent applicationStartedEvent) {
         logger.info("开始启动Amqp客户端");
-//        AmqpClient.subscribe();
+        AmqpClient.subscribe();
     }
 }

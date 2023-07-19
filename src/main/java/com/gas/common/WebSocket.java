@@ -232,7 +232,7 @@ public class WebSocket {
             ExcessGasMapper excessGasMapper = getExcessGasMapper();
             Random random = new Random();
             //造假数据
-            CreateDataUtils.createExcessGasData(random.nextInt(30));
+//            CreateDataUtils.createExcessGasData(random.nextInt(30));
             Integer number = excessGasMapper.queryRealTimeNumber(
                     DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT),
                     DateTimeUtil.getLocalDateTimeFormat(LocalDateTime.now().minusSeconds(2),
@@ -248,7 +248,7 @@ public class WebSocket {
     }
 
     private String updateTemperatureData() {
-        String deviceId = "22SI-09DG-63KJ";//测试数据
+        String deviceId = "1234";//测试数据
         double value = new Random().nextDouble() * 60 - new Random().nextDouble() * 10;
         String format = new DecimalFormat("#.00").format(value);
         int i = getTemperatureMapper().addTemperatureDateTest(new Temperature(0, Double.parseDouble(format),
@@ -258,18 +258,18 @@ public class WebSocket {
     }
 
     private String updateHumidityData() {
-        String deviceId = "22SI-09DG-63KJ";//测试数据
-        double value = new Random().nextDouble();
-        String format = new DecimalFormat("#.00").format(value);
-        int i = getHumidityMapper().addHumidityDateTest(new Humidity(0, Double.parseDouble(format),
-                DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT), deviceId));
+        String deviceId = "1234";//测试数据
+//        double value = new Random().nextDouble();
+//        String format = new DecimalFormat("#.00").format(value);
+//        int i = getHumidityMapper().addHumidityDateTest(new Humidity(0, Double.parseDouble(format),
+//                DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT), deviceId));
         Humidity humidity = getHumidityMapper().queryRealTimeHumidityByDeviceId(deviceId);
         return JSON.toJSONString(humidity.getHumidityDate());
     }
 
     private String updateHarmfulGas() {
-        String id = "22SI-09DG-63KJ";
-        CreateDataUtils.createHarmFulGas(50);
+        String id = "1234";
+//        CreateDataUtils.createHarmFulGas(50);
         String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
         List<Map<String, Object>> maps = getHarmfulGasMapper().queryRealTimeHarmfulGas(
                 DateTimeUtil.getLocalDateTimeFormat(LocalDateTime.now().minusSeconds(2), DateTimeUtil.DATETIMEFORMAT),
