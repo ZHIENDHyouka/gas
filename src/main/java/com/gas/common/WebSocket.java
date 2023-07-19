@@ -304,8 +304,10 @@ public class WebSocket {
         }
         Random random = new Random();
         for (Map m : data) {
-            double v = Double.parseDouble(m.get("data").toString()) + random.nextInt(10);
-            m.put("data", v);
+            DecimalFormat decimalFormat = new DecimalFormat("0.00");
+            String data1 = decimalFormat.format(Double.parseDouble(m.get("data").toString()) + random.nextInt(10));
+            // double v = Double.parseDouble(m.get("data").toString()) + random.nextInt(10);
+            m.put("data", data1);
         }
         result.put("realTimeData", data);
         result.put("realTimeStatistic", o);
