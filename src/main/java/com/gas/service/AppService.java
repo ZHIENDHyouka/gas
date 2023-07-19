@@ -143,7 +143,7 @@ public class AppService {
             Gas gas = gasMapper.queryGasDBTable(name);
             String gasName = null;
 //        String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
-            String now = "2023-07-11 15:43:29";
+            String now = "2023-07-19 23:52:02";
             long timeStamp = DateTimeUtil.getStringTimeStamp(now, DateTimeUtil.DATETIMEFORMAT);
             timeStamp -= 1000 * 60 * 60 * 12;
             String start = DateTimeUtil.timeStampTransformString(timeStamp, DateTimeUtil.DATETIMEFORMAT);
