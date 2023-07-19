@@ -85,11 +85,15 @@ public class AppService {
                     HashMap<String, Object> map = new HashMap<>();
                     map.put("deviceName", d.getDeviceName());
                     map.put("status", d.getDeviceStatus() == 1 ? true : false);
-                    String deviceName = maps.get(count).get("deviceName").toString();
-                    if (d.getDeviceName().equals(deviceName)) {
-                        map.put("alarmCount", maps.get(count).get("number"));
-                        count++;
-                    } else {
+                    if(count<maps.size()) {
+                        String deviceName = maps.get(count).get("deviceName").toString();
+                        if (d.getDeviceName().equals(deviceName)) {
+                            map.put("alarmCount", maps.get(count).get("number"));
+                            count++;
+                        } else {
+                            map.put("alarmCount", 0);
+                        }
+                    }else {
                         map.put("alarmCount", 0);
                     }
                     result.add(map);
