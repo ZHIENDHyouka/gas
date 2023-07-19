@@ -28,7 +28,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+
+@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CreateGasData {
     @Autowired
     private SqlSessionFactory sqlSessionFactory;
@@ -98,7 +99,7 @@ public class CreateGasData {
             double data = random.nextDouble()*10;
             DecimalFormat decimalFormat = new DecimalFormat("#.00");
             data=Double.parseDouble(decimalFormat.format(data));
-            HarmfulGas harmfulGas = new HarmfulGas(0, gasNameArr[random.nextInt(6)], data, getIndate(n), deviceIdArr[random.nextInt(10)]);
+            HarmfulGas harmfulGas = new HarmfulGas(0, gasNameArr[random.nextInt(6)], data, getIndate(i), deviceIdArr[random.nextInt(10)]);
             harmfulGases.add(harmfulGas);
         }
         return harmfulGases;
@@ -111,7 +112,7 @@ public class CreateGasData {
             double data = random.nextDouble();
             DecimalFormat decimalFormat = new DecimalFormat("#.00");
             data=Double.parseDouble(decimalFormat.format(data));
-            Humidity humidity = new Humidity(0,data,getIndate(n),deviceIdArr[random.nextInt(10)]);
+            Humidity humidity = new Humidity(0,data,getIndate(i),deviceIdArr[random.nextInt(10)]);
             humidityList.add(humidity);
         }
         return humidityList;
@@ -124,7 +125,7 @@ public class CreateGasData {
             double data = random.nextDouble()+(random.nextInt(55)-15);
             DecimalFormat decimalFormat = new DecimalFormat("#.00");
             data=Double.parseDouble(decimalFormat.format(data));
-            Temperature temperature = new Temperature(0,data,getIndate(n),deviceIdArr[random.nextInt(10)]);
+            Temperature temperature = new Temperature(0,data,getIndate(i),deviceIdArr[random.nextInt(10)]);
             temperatureList.add(temperature);
         }
         return temperatureList;

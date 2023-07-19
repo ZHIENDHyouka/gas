@@ -298,7 +298,9 @@ public class WebSocket {
             String name = map.get("data").toString();
             statisticInitData = getAppService().getStatisticInitData(name);
             List statistic = (List) statisticInitData.getData();
-            o = statistic.get(statistic.size() - 1);
+            if (statistic.size()>0) {
+                o = statistic.get(statistic.size() - 1);
+            }
         }
         Random random = new Random();
         for (Map m : data) {
