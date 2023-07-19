@@ -135,7 +135,7 @@ public class AppService {
             List<Map<String, Object>> list = statisticMapper.queryNewGasData(gas.getTableName(), name, id, dataColumn);
             Map<String, Object> map = list.get(0);
             String data = decimalFormat.format(map.get("data"));
-            map.put("data",data);
+            map.put("data", data);
             map.put("name", gas.getName());
             maps.add(map);
         }
@@ -146,8 +146,8 @@ public class AppService {
         if (!"".equals(name)) {
             Gas gas = gasMapper.queryGasDBTable(name);
             String gasName = null;
-//        String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
-            String now = "2023-07-19 23:52:02";
+            String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
+//             String now = "2023-07-19 23:52:02";
             long timeStamp = DateTimeUtil.getStringTimeStamp(now, DateTimeUtil.DATETIMEFORMAT);
             timeStamp -= 1000 * 60 * 60 * 12;
             String start = DateTimeUtil.timeStampTransformString(timeStamp, DateTimeUtil.DATETIMEFORMAT);
@@ -186,7 +186,7 @@ public class AppService {
                     start = DateTimeUtil.addTimeStamp(start, 1000 * 60 * 60);
                     calcList.clear();
                     result.add(hoursData);
-                    if (count+1!=maps.size()) {
+                    if (count + 1 != maps.size()) {
                         String s = maps.get(count + 1).get(indateColumn).toString();
                         if (s.compareTo(startInterval) >= 0) {
                             count++;
@@ -209,7 +209,7 @@ public class AppService {
 
     public ResultVO getFeedbackAllInfo(Integer id) {
         List<Device> allFeedbackInfo = feedbackMapper.getFeedbackAllInfo(id);
-        return new ResultVO(1,allFeedbackInfo,"数据获取成功");
+        return new ResultVO(1, allFeedbackInfo, "数据获取成功");
     }
 
 }
