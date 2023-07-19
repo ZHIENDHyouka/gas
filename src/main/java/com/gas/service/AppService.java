@@ -182,10 +182,12 @@ public class AppService {
                     start = DateTimeUtil.addTimeStamp(start, 1000 * 60 * 60);
                     calcList.clear();
                     result.add(hoursData);
-                    String s = maps.get(count + 1).get(indateColumn).toString();
-                    if (s.compareTo(startInterval) >= 0) {
-                        count++;
-                        continue;
+                    if (count+1!=maps.size()) {
+                        String s = maps.get(count + 1).get(indateColumn).toString();
+                        if (s.compareTo(startInterval) >= 0) {
+                            count++;
+                            continue;
+                        }
                     }
                 }
                 calcList.add(data);
