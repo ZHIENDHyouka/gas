@@ -1,7 +1,9 @@
 package com.gas.service;
 
+import com.gas.entity.CriticalValue;
 import com.gas.entity.ExcessGas;
 import com.gas.entity.ResultVO;
+import com.gas.mapper.CriticalValueMapper;
 import com.gas.mapper.ExcessGasMapper;
 import com.gas.utils.DateTimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,8 @@ import java.util.*;
 public class AlarmInfoService {
     @Autowired
     private ExcessGasMapper excessGasMapper;
+    @Autowired
+    private CriticalValueMapper criticalValueMapper;
 
     public ResultVO getRealTimeAlarmDataer(){
         List<Map<String,Object>> lists = excessGasMapper.queryRealTimeAlarmDataList();
@@ -42,5 +46,23 @@ public class AlarmInfoService {
         date += " 00:00:00";
         List<ExcessGas> excessGases = excessGasMapper.queryDayAllAlarmData(date);
         return new ResultVO(1,excessGases,"");
+    }
+
+    public ResultVO updateGasAlarmCritical(Map<String,Object> map){
+        Integer id = (Integer)map.get("id");
+        String lowerLimit = map.get("lowerLimit").toString();
+        String upperLimit = map.get("upperLimit").toString();
+        int i = criticalValueMapper.updateAlarmCriticalValue(lowerLimit, upperLimit, id);
+        if (i>0){
+            //更新接收云平台数据的判断标准
+            //xxxxxxxxx
+            return new ResultVO(1,null,"修改成功!");
+        }
+        return new ResultVO(0,null,"修改失败!");
+    }
+
+    public ResultVO queryAllAlarmCriticalInfo(){
+        List<CriticalValue> criticalValues = criticalValueMapper.queryAllCriticalInfo();
+        return new ResultVO(1,criticalValues,"");
     }
 }

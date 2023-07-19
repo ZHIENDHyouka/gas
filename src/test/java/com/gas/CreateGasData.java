@@ -8,6 +8,7 @@ import com.gas.mapper.DeviceMapper;
 import com.gas.mapper.HarmfulGasMapper;
 import com.gas.mapper.HumidityMapper;
 import com.gas.mapper.TemperatureMapper;
+import com.gas.utils.DateTimeUtil;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -97,7 +98,7 @@ public class CreateGasData {
             double data = random.nextDouble()*10;
             DecimalFormat decimalFormat = new DecimalFormat("#.00");
             data=Double.parseDouble(decimalFormat.format(data));
-            HarmfulGas harmfulGas = new HarmfulGas(0, gasNameArr[random.nextInt(6)], data, getDateTime(), deviceIdArr[random.nextInt(10)]);
+            HarmfulGas harmfulGas = new HarmfulGas(0, gasNameArr[random.nextInt(6)], data, getIndate(n), deviceIdArr[random.nextInt(10)]);
             harmfulGases.add(harmfulGas);
         }
         return harmfulGases;
@@ -110,7 +111,7 @@ public class CreateGasData {
             double data = random.nextDouble();
             DecimalFormat decimalFormat = new DecimalFormat("#.00");
             data=Double.parseDouble(decimalFormat.format(data));
-            Humidity humidity = new Humidity(0,data,getDateTime(),deviceIdArr[random.nextInt(10)]);
+            Humidity humidity = new Humidity(0,data,getIndate(n),deviceIdArr[random.nextInt(10)]);
             humidityList.add(humidity);
         }
         return humidityList;
@@ -123,7 +124,7 @@ public class CreateGasData {
             double data = random.nextDouble()+(random.nextInt(55)-15);
             DecimalFormat decimalFormat = new DecimalFormat("#.00");
             data=Double.parseDouble(decimalFormat.format(data));
-            Temperature temperature = new Temperature(0,data,getDateTime(),deviceIdArr[random.nextInt(10)]);
+            Temperature temperature = new Temperature(0,data,getIndate(n),deviceIdArr[random.nextInt(10)]);
             temperatureList.add(temperature);
         }
         return temperatureList;
@@ -157,5 +158,11 @@ public class CreateGasData {
             e.printStackTrace();
         }
         return format;
+    }
+
+    private String getIndate(int minute){
+        String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
+        String s = DateTimeUtil.addTimeStamp(now, 1000L * 60 * minute);
+        return s;
     }
 }

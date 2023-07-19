@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gas.mapper.CriticalValueMapper">
+    <resultMap id="criticalMap" type="com.gas.entity.CriticalValue">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <result column="lower_limit" property="lowerLimit"></result>
+        <result column="upper_limit" property="upperLimit"></result>
+        <result column="symbol" property="symbol"></result>
+    </resultMap>
+    <update id="updateAlarmCriticalValue">
+        update critical_value set lower_limit=#{lower},upper_limit=#{upper}
+        where id=#{id};
+    </update>
+    <select id="queryAllCriticalInfo" resultMap="criticalMap">
+        select id,name,lower_limit,upper_limit,symbol
+        from critical_value;
+    </select>
+</mapper>

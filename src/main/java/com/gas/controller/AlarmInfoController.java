@@ -3,10 +3,9 @@ package com.gas.controller;
 import com.gas.entity.ResultVO;
 import com.gas.service.AlarmInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/alarm")
@@ -24,4 +23,17 @@ public class AlarmInfoController {
     public ResultVO getDayAllAlarmInfo(){
         return alarmInfoService.getDayAllAlarmInfo();
     }
+
+    @PostMapping("/updateGasAlarmCritical")
+    public ResultVO updateGasAlarmCritical(@RequestBody Map map){
+        ResultVO resultVO = alarmInfoService.updateGasAlarmCritical(map);
+        return  resultVO;
+    }
+
+    @GetMapping("/queryAllAlarmCriticalInfo")
+    public ResultVO queryAllAlarmCriticalInfo(){
+       return alarmInfoService.queryAllAlarmCriticalInfo();
+    }
+
+
 }
