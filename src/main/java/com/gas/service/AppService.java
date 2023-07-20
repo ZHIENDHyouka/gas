@@ -86,7 +86,7 @@ public class AppService {
                     HashMap<String, Object> map = new HashMap<>();
                     map.put("deviceName", d.getDeviceName());
                     map.put("status", d.getDeviceStatus() == 1 ? true : false);
-                    if(count<maps.size()) {
+                    if (count < maps.size()) {
                         String deviceName = maps.get(count).get("deviceName").toString();
                         if (d.getDeviceName().equals(deviceName)) {
                             map.put("alarmCount", maps.get(count).get("number"));
@@ -94,7 +94,7 @@ public class AppService {
                         } else {
                             map.put("alarmCount", 0);
                         }
-                    }else {
+                    } else {
                         map.put("alarmCount", 0);
                     }
                     result.add(map);
@@ -133,20 +133,20 @@ public class AppService {
                 id = "g_id";
                 name = gas.getName();
             }
-            if (!"PM2.5".equals(name)) {
-                List<Map<String, Object>> list = statisticMapper.queryNewGasData(gas.getTableName(), name, id, dataColumn);
-                Map<String, Object> map = list.get(0);
+
+            List<Map<String, Object>> list = statisticMapper.queryNewGasData(gas.getTableName(), name, id, dataColumn);
+            Map<String, Object> map = new HashMap<>();
+            if (list.size() > 0) {
+                map = list.get(0);
                 String data = decimalFormat.format(map.get("data"));
                 map.put("data", data);
                 map.put("name", gas.getName());
                 maps.add(map);
-            }else {
-                HashMap<String, Object> map = new HashMap<>();
+            } else {
                 map.put("data", 0.00);
                 map.put("name", gas.getName());
                 maps.add(map);
             }
-
         }
         return new ResultVO(1, maps, "");
     }
@@ -158,11 +158,11 @@ public class AppService {
 //            String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
 //             String now = "2023-07-19 23:52:02";
             //时间出队
-            String now= "";
+            String now = "";
             Queue importDataQueue = SpringContext.getBean("importDataQueue", Queue.class);
-            if (importDataQueue.poll()!=null){
-                now= SpringContext.getBean("importDataQueue", Queue.class).poll().toString();
-            }else {
+            if (importDataQueue.poll() != null) {
+                now = SpringContext.getBean("importDataQueue", Queue.class).poll().toString();
+            } else {
                 now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
             }
             long timeStamp = DateTimeUtil.getStringTimeStamp(now, DateTimeUtil.DATETIMEFORMAT);
@@ -184,14 +184,14 @@ public class AppService {
                 dataColumn = "g_data";
                 indateColumn = "g_indate";
             }
-            long intervalTimeStamp =timeStamp+1000;
+            long intervalTimeStamp = timeStamp + 1000;
             List<Map<String, Object>> maps = statisticMapper.queryGasDate(gas.getTableName(), start, now, gasName, dataColumn, indateColumn);
             ArrayList<Double> calcList = new ArrayList<>();
             ArrayList<Map<String, Object>> result = new ArrayList<>();
             DecimalFormat decimalFormat = new DecimalFormat("0.0000");
 
             for (int i = 0; i < 12; i++) {
-                if (i<maps.size()) {
+                if (i < maps.size()) {
                     String indate = maps.get(i).get(indateColumn).toString();
                     double value = Double.parseDouble(maps.get(i).get(dataColumn).toString());
                     long indateTimeStamp = DateTimeUtil.getStringTimeStamp(indate, DateTimeUtil.DATETIMEFORMAT);
@@ -209,10 +209,10 @@ public class AppService {
                         calcList.clear();
                         result.add(secondData);
                     }
-                }else {
+                } else {
                     HashMap<String, Object> secondData = new HashMap<>();
                     secondData.put("data", 0.0);
-                    secondData.put("date",DateTimeUtil.timeStampTransformString(timeStamp, DateTimeUtil.DATETIMEFORMAT));
+                    secondData.put("date", DateTimeUtil.timeStampTransformString(timeStamp, DateTimeUtil.DATETIMEFORMAT));
                     result.add(secondData);
                     timeStamp = intervalTimeStamp;
                     intervalTimeStamp += 1000;
