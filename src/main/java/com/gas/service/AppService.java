@@ -160,7 +160,7 @@ public class AppService {
             //时间出队
             String now = "";
             Queue importDataQueue = SpringContext.getBean("importDataQueue", Queue.class);
-            if (importDataQueue.poll() != null) {
+            if (importDataQueue.size()>0) {
                 now = SpringContext.getBean("importDataQueue", Queue.class).poll().toString();
             } else {
                 now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
