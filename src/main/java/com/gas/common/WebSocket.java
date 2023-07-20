@@ -20,10 +20,7 @@ import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 @ServerEndpoint(value = "/webSocket")
@@ -292,22 +289,23 @@ public class WebSocket {
     private String updateAppRealTimeData(Map map) {
         HashMap<String, Object> result = new HashMap<>();
         List<Map<String, Object>> data = (List<Map<String, Object>>) getAppService().getGasNameAndNewData().getData();
-        ResultVO statisticInitData = null;
-        Object o = null;
-        if (map.get("data") != null && !"".equals(map.get("data").toString())) {
-            String name = map.get("data").toString();
-            statisticInitData = getAppService().getStatisticInitData(name);
-            List statistic = (List) statisticInitData.getData();
-            if (statistic.size()>0) {
-                o = statistic.get(statistic.size() - 1);
-            }
-        }
-        Random random = new Random();
+        HashMap<String, Object> o = new HashMap<>();
         for (Map m : data) {
             DecimalFormat decimalFormat = new DecimalFormat("0.00");
-            String data1 = decimalFormat.format(Double.parseDouble(m.get("data").toString()) + random.nextInt(10));
+            String data1 = decimalFormat.format(Double.parseDouble(m.get("data").toString()));
             // double v = Double.parseDouble(m.get("data").toString()) + random.nextInt(10);
             m.put("data", data1);
+            if (map.get("data").toString().equals(m.get("name"))) {
+                Queue importDataQueue = SpringContext.getBean("importDataQueue", Queue.class);
+                String date = "";
+                if (importDataQueue.size()>0){
+                    date=importDataQueue.poll().toString();
+                }else {
+                    date=DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
+                }
+                o.put("date", date);
+                o.put("data", data1);
+            }
         }
         result.put("realTimeData", data);
         result.put("realTimeStatistic", o);

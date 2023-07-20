@@ -1,5 +1,6 @@
 package com.gas.service;
 
+import com.gas.common.SpringContext;
 import com.gas.entity.*;
 import com.gas.mapper.*;
 import com.gas.utils.DateTimeUtil;
@@ -132,12 +133,20 @@ public class AppService {
                 id = "g_id";
                 name = gas.getName();
             }
-            List<Map<String, Object>> list = statisticMapper.queryNewGasData(gas.getTableName(), name, id, dataColumn);
-            Map<String, Object> map = list.get(0);
-            String data = decimalFormat.format(map.get("data"));
-            map.put("data", data);
-            map.put("name", gas.getName());
-            maps.add(map);
+            if (!"PM2.5".equals(name)) {
+                List<Map<String, Object>> list = statisticMapper.queryNewGasData(gas.getTableName(), name, id, dataColumn);
+                Map<String, Object> map = list.get(0);
+                String data = decimalFormat.format(map.get("data"));
+                map.put("data", data);
+                map.put("name", gas.getName());
+                maps.add(map);
+            }else {
+                HashMap<String, Object> map = new HashMap<>();
+                map.put("data", 0.00);
+                map.put("name", gas.getName());
+                maps.add(map);
+            }
+
         }
         return new ResultVO(1, maps, "");
     }
@@ -146,10 +155,19 @@ public class AppService {
         if (!"".equals(name)) {
             Gas gas = gasMapper.queryGasDBTable(name);
             String gasName = null;
-            String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
+//            String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
 //             String now = "2023-07-19 23:52:02";
+            //时间出队
+            String now= "";
+            Queue importDataQueue = SpringContext.getBean("importDataQueue", Queue.class);
+            if (importDataQueue.poll()!=null){
+                now= SpringContext.getBean("importDataQueue", Queue.class).poll().toString();
+            }else {
+                now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
+            }
             long timeStamp = DateTimeUtil.getStringTimeStamp(now, DateTimeUtil.DATETIMEFORMAT);
-            timeStamp -= 1000 * 60 * 60 * 12;
+//            timeStamp -= 1000 * 60 * 60 * 12;
+            timeStamp -= 1000 * 12;
             String start = DateTimeUtil.timeStampTransformString(timeStamp, DateTimeUtil.DATETIMEFORMAT);
             if (!("温度".equals(name) || "湿度".equals(name))) {
                 gasName = name;
@@ -166,37 +184,65 @@ public class AppService {
                 dataColumn = "g_data";
                 indateColumn = "g_indate";
             }
-            String startInterval = DateTimeUtil.addTimeStamp(start, 1000 * 60 * 60);
+            long intervalTimeStamp =timeStamp+1000;
             List<Map<String, Object>> maps = statisticMapper.queryGasDate(gas.getTableName(), start, now, gasName, dataColumn, indateColumn);
             ArrayList<Double> calcList = new ArrayList<>();
             ArrayList<Map<String, Object>> result = new ArrayList<>();
             DecimalFormat decimalFormat = new DecimalFormat("0.0000");
 
-            int count = 0;
-            for (Map<String, Object> map : maps) {
-                String datetime = map.get(indateColumn).toString();
-                Double data = Double.parseDouble(map.get(dataColumn).toString());
-                if (datetime.compareTo(startInterval) >= 0) {
-                    startInterval = DateTimeUtil.addTimeStamp(start, 1000 * 60 * 60);
-                    HashMap<String, Object> hoursData = new HashMap<>();
-                    Double avg = calcList.size() > 0 ? getGasListAverage(calcList) : 0.0;
-                    avg = Double.parseDouble(decimalFormat.format(avg));
-                    hoursData.put("data", avg);
-                    hoursData.put("date", start);
-                    start = DateTimeUtil.addTimeStamp(start, 1000 * 60 * 60);
-                    calcList.clear();
-                    result.add(hoursData);
-                    if (count + 1 != maps.size()) {
-                        String s = maps.get(count + 1).get(indateColumn).toString();
-                        if (s.compareTo(startInterval) >= 0) {
-                            count++;
-                            continue;
-                        }
+            for (int i = 0; i < 12; i++) {
+                if (i<maps.size()) {
+                    String indate = maps.get(i).get(indateColumn).toString();
+                    double value = Double.parseDouble(maps.get(i).get(dataColumn).toString());
+                    long indateTimeStamp = DateTimeUtil.getStringTimeStamp(indate, DateTimeUtil.DATETIMEFORMAT);
+                    if (indateTimeStamp >= timeStamp && indateTimeStamp <= intervalTimeStamp) {
+                        //在当前范围内
+                        calcList.add(value);
+                    } else {
+                        HashMap<String, Object> secondData = new HashMap<>();
+                        Double avg = calcList.size() > 0 ? getGasListAverage(calcList) : 0.0;
+                        avg = Double.parseDouble(decimalFormat.format(avg));
+                        secondData.put("data", avg);
+                        secondData.put("date", DateTimeUtil.timeStampTransformString(timeStamp, DateTimeUtil.DATETIMEFORMAT));
+                        timeStamp = intervalTimeStamp;
+                        intervalTimeStamp += 1000;
+                        calcList.clear();
+                        result.add(secondData);
                     }
+                }else {
+                    HashMap<String, Object> secondData = new HashMap<>();
+                    secondData.put("data", 0.0);
+                    secondData.put("date",DateTimeUtil.timeStampTransformString(timeStamp, DateTimeUtil.DATETIMEFORMAT));
+                    result.add(secondData);
+                    timeStamp = intervalTimeStamp;
+                    intervalTimeStamp += 1000;
                 }
-                calcList.add(data);
-                count++;
             }
+
+//            for (Map<String, Object> map : maps) {
+//                String datetime = map.get(indateColumn).toString();
+//                Double data = Double.parseDouble(map.get(dataColumn).toString());
+//                if (datetime.compareTo(startInterval) >= 0) {
+//                    startInterval = DateTimeUtil.addTimeStamp(start, 1000 );
+//                    HashMap<String, Object> hoursData = new HashMap<>();
+//                    Double avg = calcList.size() > 0 ? getGasListAverage(calcList) : 0.0;
+//                    avg = Double.parseDouble(decimalFormat.format(avg));
+//                    hoursData.put("data", avg);
+//                    hoursData.put("date", start);
+//                    start = DateTimeUtil.addTimeStamp(start, 1000 );
+//                    calcList.clear();
+//                    result.add(hoursData);
+//                    if (count + 1 != maps.size()) {
+//                        String s = maps.get(count + 1).get(indateColumn).toString();
+//                        if (s.compareTo(startInterval) >= 0) {
+//                            count++;
+//                            continue;
+//                        }
+//                    }
+//                }
+//                calcList.add(data);
+//                count++;
+//            }
             return new ResultVO(1, result, name);
         }
         return null;

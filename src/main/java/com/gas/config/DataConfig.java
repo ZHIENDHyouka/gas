@@ -9,7 +9,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 @Configuration
 public class DataConfig {
@@ -27,5 +30,11 @@ public class DataConfig {
     public List<CriticalValue> getCriticalValueList(){
         CopyOnWriteArrayList criticalValueList = new CopyOnWriteArrayList(criticalValueMapper.queryAllCriticalInfo());
         return criticalValueList;
+    }
+
+    @Bean(name = "importDataQueue")
+    public Queue<String> getImportDataQueue(){
+        LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<>();
+        return queue;
     }
 }

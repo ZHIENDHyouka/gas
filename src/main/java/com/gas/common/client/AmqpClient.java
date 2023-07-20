@@ -25,6 +25,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import java.net.URI;
 import java.util.*;
+import java.util.Queue;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -43,6 +44,7 @@ public class AmqpClient {
     private static List<Device> deviceNameList = SpringContext.getBean("deviceNameList", List.class);
 //    private static List<CriticalValue> criticalValueList = SpringContext.getBean("criticalValueList", List.class);
     private static boolean isExistConnection = false;
+    private static  Queue importDataQueue = SpringContext.getBean("importDataQueue", Queue.class);
     private static Lock lock = new ReentrantLock(true);//创建一个公平锁
 
 
@@ -182,6 +184,13 @@ public class AmqpClient {
                 Double value = Double.valueOf(gasMap.get("value").toString());
                 long timeStamp = (long) gasMap.get("time");
                 String datetimeFormat = DateTimeUtil.timeStampTransformString(timeStamp, DateTimeUtil.DATETIMEFORMAT);
+                //时间入队
+                if (!importDataQueue.contains(datetimeFormat)){
+                    importDataQueue.offer(datetimeFormat);
+                }
+                if (importDataQueue.size()>30){
+                    importDataQueue.clear();
+                }
                 if ("temperature".equals(key)) {
                     gasName[0] = "温度";
                     type = "温度";
