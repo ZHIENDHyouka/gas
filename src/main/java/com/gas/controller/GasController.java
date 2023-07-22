@@ -5,6 +5,7 @@ import com.gas.service.GasService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 @RestController
@@ -27,9 +28,10 @@ public class GasController {
     }
 
     @PostMapping("/download")
-    public ResultVO download(@RequestBody Map<String,Object> condition){
-        ResultVO result = gasService.download(condition);
-        return result;
+    public void download(@RequestBody Map<String,Object> condition, HttpServletResponse response){
+//        ResultVO result = gasService.download(condition,response);
+        gasService.download(condition,response);
+//        return result;
     }
 
     @GetMapping("/getHarmfulGasAvgData")

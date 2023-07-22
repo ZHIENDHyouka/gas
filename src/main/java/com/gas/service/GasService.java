@@ -16,7 +16,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -188,51 +189,55 @@ public class GasService {
         return headList;
     }
 
-    public ResultVO download(Map<String, Object> condition) {
-
+    public ResultVO download(Map<String, Object> condition, HttpServletResponse response) {
         ResultVO resultVO = new ResultVO(0, null, "");
+            Integer number = Integer.valueOf(condition.get("number").toString());
+            String gasName = condition.get("gas").toString();
+            String data = JSON.toJSONString(condition.get("data"));
+            log.info("需要导出数据条数：{}", number);
+            log.info("需要导出数据类型：{}", gasName);
+            if ("温度".equals(gasName)) {
+                List<Temperature> temperatureAll = JSON.parseArray(data, Temperature.class);
+                List<Temperature> temperatures = temperatureAll.subList(0, number);
+                String fileName = "Temperature";
+                downloadToExcel(fileName, Temperature.class, "温度信息", temperatures,response);
+                resultVO.setCode(1);
+            } else if ("湿度".equals(gasName)) {
+                List<Humidity> humidityAll = JSON.parseArray(data, Humidity.class);
+                List<Humidity> humiditys = humidityAll.subList(0, number);
+                String fileName = "Humidity";
+                downloadToExcel(fileName, Humidity.class, "湿度信息", humiditys,response);
+                resultVO.setCode(1);
+            } else if ("报警信息".equals(gasName)) {
+                List<ExcessGas> excessGasAll = JSONArray.parseArray(data, ExcessGas.class);
+                List<ExcessGas> excessGases = excessGasAll.subList(0, number);
+                String fileName = "ExcessGas";
+                downloadToExcel(fileName, ExcessGas.class, "报警信息", excessGases,response);
+                resultVO.setCode(1);
+            } else {
+                List<HarmfulGas> harmfulGasAll = JSONArray.parseArray(data, HarmfulGas.class);
+                List<HarmfulGas> harmfulGases = harmfulGasAll.subList(0, number);
+                String fileName = "HarmfulGas";
+                downloadToExcel(fileName, HarmfulGas.class, "有害气体信息", harmfulGases,response);
+                resultVO.setCode(1);
+            }
+            return resultVO;
 
-        Integer number = Integer.valueOf(condition.get("number").toString());
-        String gasName = condition.get("gas").toString();
-        String data = JSON.toJSONString(condition.get("data"));
-        log.info("需要导出数据条数：{}", number);
-        log.info("需要导出数据类型：{}", gasName);
-        if ("温度".equals(gasName)) {
-            List<Temperature> temperatureAll = JSON.parseArray(data, Temperature.class);
-            List<Temperature> temperatures = temperatureAll.subList(0, number);
-            String fileName = "Temperature.xlsx";
-            downloadToExcel(fileName, Temperature.class, "温度信息", temperatures);
-            resultVO.setCode(1);
-        } else if ("湿度".equals(gasName)) {
-            List<Humidity> humidityAll = JSON.parseArray(data, Humidity.class);
-            List<Humidity> humiditys = humidityAll.subList(0, number);
-            String fileName = "Humidity.xlsx";
-            downloadToExcel(fileName, Humidity.class, "湿度信息", humiditys);
-            resultVO.setCode(1);
-        } else if ("报警信息".equals(gasName)) {
-            List<ExcessGas> excessGasAll = JSONArray.parseArray(data, ExcessGas.class);
-            List<ExcessGas> excessGases = excessGasAll.subList(0, number);
-            String fileName = "ExcessGas.xlsx";
-            downloadToExcel(fileName, ExcessGas.class, "报警信息", excessGases);
-            resultVO.setCode(1);
-        } else {
-            List<HarmfulGas> harmfulGasAll = JSONArray.parseArray(data, HarmfulGas.class);
-            List<HarmfulGas> harmfulGases = harmfulGasAll.subList(0, number);
-            String fileName = "HarmfulGas.xlsx";
-            downloadToExcel(fileName, HarmfulGas.class, "有害气体信息", harmfulGases);
-            resultVO.setCode(1);
-        }
-        return resultVO;
     }
 
-    private void downloadToExcel(String fileName, Class<?> clazz, String describe, List<?> list) {
-
-        String rootPath = path +System.currentTimeMillis()+fileName;
-        File file = new File(rootPath);
-        if(!file.getParentFile().exists()){
-            boolean mkdir = file.getParentFile().mkdir();
+    private void downloadToExcel(String fileName, Class<?> clazz, String describe, List<?> list,HttpServletResponse response) {
+        try {
+            fileName=fileName+"-"+DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT)+".xlsx";
+            OutputStream out  = response.getOutputStream();
+            response.setContentType("application/octet-stream");
+            response.setHeader("Content-Disposition", "attachment;fileName=" + fileName);
+            EasyExcel.write(out, clazz).autoCloseStream(true).sheet(describe).doWrite(list);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        EasyExcel.write(file, clazz).sheet(describe).doWrite(list);
+
+
     }
 
     public ResultVO queryHarmfulGasAvgData(){

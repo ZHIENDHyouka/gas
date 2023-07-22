@@ -228,9 +228,8 @@ public class AmqpClient {
                         logger.info("报警信息插入成功!");
                     }
                 } catch (Exception e) {
-                    logger.info("报警数据插入失败!");
-                }
-                finally {
+                    logger.error("报警数据插入失败!");
+                } finally {
                     lock.unlock();
                 }
             }
