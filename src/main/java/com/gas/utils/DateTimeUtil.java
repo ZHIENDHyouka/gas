@@ -67,7 +67,7 @@ public class DateTimeUtil {
      * @param transFormat
      * @return
      */
-    public static String stringDateTimeFormat(String datetime,String format,String transFormat){
+    public static String stringDateTimeFormat(String datetime, String format, String transFormat){
         LocalDateTime localDateTime = stringTransformLocalDateTime(datetime, format);
         return getLocalDateTimeFormat(localDateTime,transFormat);
     }

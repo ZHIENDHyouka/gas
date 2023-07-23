@@ -267,8 +267,13 @@ public class WebSocket {
         String id = "1234";
 //        CreateDataUtils.createHarmFulGas(50);
         String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
+        long stringTimeStamp = DateTimeUtil.getStringTimeStamp(now, DateTimeUtil.DATETIMEFORMAT);
+        //延迟5s
+        stringTimeStamp-=1000*3;
+        now = DateTimeUtil.timeStampTransformString(stringTimeStamp, DateTimeUtil.DATETIMEFORMAT);
+        System.out.println(now);
         List<Map<String, Object>> maps = getHarmfulGasMapper().queryRealTimeHarmfulGas(
-                DateTimeUtil.getLocalDateTimeFormat(LocalDateTime.now().minusSeconds(2), DateTimeUtil.DATETIMEFORMAT),
+                DateTimeUtil.getLocalDateTimeFormat(LocalDateTime.now().minusSeconds(5), DateTimeUtil.DATETIMEFORMAT),
                 now,
                 id);
         HashMap<String, Object> result = new HashMap<>();

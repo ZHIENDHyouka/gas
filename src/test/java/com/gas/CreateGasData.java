@@ -99,6 +99,8 @@ public class CreateGasData {
         Random random = new Random();
         String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
         String start = "2023-07-23 00:00:00";
+//        String now = "2023-07-24 00:00:00";
+//        String start = "2023-07-23 00:00:00";
         long startTimeStamp = DateTimeUtil.getStringTimeStamp(start, DateTimeUtil.DATETIMEFORMAT);
         long endTimeStamp = DateTimeUtil.getStringTimeStamp(now, DateTimeUtil.DATETIMEFORMAT);
         long intervalSecond =(endTimeStamp-startTimeStamp)/1000;
@@ -130,7 +132,8 @@ public class CreateGasData {
     private List<Humidity> createHumidityDataList(int n) {
         ArrayList<Humidity> humidityList = new ArrayList<>();
         Random random = new Random();
-        String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
+//        String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
+        String now = "2023-07-24 00:00:00";
         String start = "2023-07-23 00:00:00";
         long startTimeStamp = DateTimeUtil.getStringTimeStamp(start, DateTimeUtil.DATETIMEFORMAT);
         long endTimeStamp = DateTimeUtil.getStringTimeStamp(now, DateTimeUtil.DATETIMEFORMAT);
@@ -201,11 +204,14 @@ public class CreateGasData {
         Random random = new Random();
         double one_add_value =random.nextDouble() * 0.06;
         double two_reduce_value = random.nextDouble() * 0.15;
+        double third_reduce_value = random.nextDouble() * 0.2;
         double v = 0;
         if (m>=_0 && m<=_8){
            v = new BigDecimal(one_period_value-one_add_value).setScale(2, BigDecimal.ROUND_DOWN).doubleValue();
         }else if (m>=_8 && m<=_22){
             v = new BigDecimal(two_period_value+two_reduce_value).setScale(2, BigDecimal.ROUND_DOWN).doubleValue();
+        }else {
+            v = new BigDecimal(two_period_value+third_reduce_value).setScale(2, BigDecimal.ROUND_DOWN).doubleValue();
         }
         return v;
     }
