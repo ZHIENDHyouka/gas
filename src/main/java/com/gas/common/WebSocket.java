@@ -227,7 +227,6 @@ public class WebSocket {
     private String updateAlarmInfoNumber() {
         try {
             ExcessGasMapper excessGasMapper = getExcessGasMapper();
-            Random random = new Random();
             //造假数据
 //            CreateDataUtils.createExcessGasData(random.nextInt(30));
             Integer number = excessGasMapper.queryRealTimeNumber(
@@ -246,10 +245,10 @@ public class WebSocket {
 
     private String updateTemperatureData() {
         String deviceId = "1234";//测试数据
-        double value = new Random().nextDouble() * 60 - new Random().nextDouble() * 10;
-        String format = new DecimalFormat("#.00").format(value);
-        int i = getTemperatureMapper().addTemperatureDateTest(new Temperature(0, Double.parseDouble(format),
-                DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT), deviceId));
+//        double value = new Random().nextDouble() * 60 - new Random().nextDouble() * 10;
+//        String format = new DecimalFormat("#.00").format(value);
+//        int i = getTemperatureMapper().addTemperatureDateTest(new Temperature(0, Double.parseDouble(format),
+//                DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT), deviceId));
         Temperature temperature = getTemperatureMapper().queryRealTimeTemperatureByDeviceId(deviceId);
         return JSON.toJSONString(temperature.getTemperatureDate());
     }
