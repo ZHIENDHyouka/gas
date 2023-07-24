@@ -7,6 +7,7 @@ import com.gas.mapper.StatisticMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
@@ -99,9 +100,9 @@ public class StatisticService {
             unitStatisticData.stream().forEach(map -> {
                 dateList.add(map.get("datetime").toString());
                 if (((Double) map.get("data")) == null) {
-                    dataList.add(0.0);
+                    dataList.add(0.00);
                 } else {
-                    dataList.add((Double) map.get("data"));
+                    dataList.add(new BigDecimal((Double) map.get("data")).setScale(2, BigDecimal.ROUND_DOWN).doubleValue());
                 }
             });
             result.put("code", 1);

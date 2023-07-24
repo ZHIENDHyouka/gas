@@ -98,15 +98,18 @@ public class CreateGasData {
         ArrayList<HarmfulGas> harmfulGases = new ArrayList<>();
         Random random = new Random();
         String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
-        String start = "2023-07-23 00:00:00";
+        String start = "2023-07-18 00:00:00";
 //        String now = "2023-07-24 00:00:00";
 //        String start = "2023-07-23 00:00:00";
         long startTimeStamp = DateTimeUtil.getStringTimeStamp(start, DateTimeUtil.DATETIMEFORMAT);
         long endTimeStamp = DateTimeUtil.getStringTimeStamp(now, DateTimeUtil.DATETIMEFORMAT);
-        long intervalSecond =(endTimeStamp-startTimeStamp)/1000;
+        long intervalSecond =(endTimeStamp-startTimeStamp)/(1000*60);
         for (int i = 0; i < intervalSecond; i++) {
             String gasName = gasNameArr[random.nextInt(6)];
             double data = 0;
+//            if (DateTimeUtil.getStringTimeStamp(start, DateTimeUtil.DATETIMEFORMAT)+day<=startTimeStamp){
+//                start=DateTimeUtil.timeStampTransformString(startTimeStamp,DateTimeUtil.DATETIMEFORMAT);
+//            }
             String s = DateTimeUtil.timeStampTransformString(startTimeStamp, DateTimeUtil.DATETIMEFORMAT);
             if ("PM2.5".equals(gasName)){
                 data= new BigDecimal(random.nextDouble() * 15).setScale(2, BigDecimal.ROUND_DOWN).doubleValue();
@@ -122,7 +125,7 @@ public class CreateGasData {
                 data= new BigDecimal(random.nextDouble() * 100).setScale(2, BigDecimal.ROUND_DOWN).doubleValue();
             }
             HarmfulGas harmfulGas = new HarmfulGas(0,gasName , data, s, "1234");
-            startTimeStamp+=1000;
+            startTimeStamp+=1000*60;
             harmfulGases.add(harmfulGas);
         }
 
@@ -132,18 +135,22 @@ public class CreateGasData {
     private List<Humidity> createHumidityDataList(int n) {
         ArrayList<Humidity> humidityList = new ArrayList<>();
         Random random = new Random();
-//        String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
-        String now = "2023-07-24 00:00:00";
-        String start = "2023-07-23 00:00:00";
+        String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
+//        String now = "2023-07-24 00:00:00";
+        String start = "2023-07-18 00:00:00";
         long startTimeStamp = DateTimeUtil.getStringTimeStamp(start, DateTimeUtil.DATETIMEFORMAT);
         long endTimeStamp = DateTimeUtil.getStringTimeStamp(now, DateTimeUtil.DATETIMEFORMAT);
-        long intervalSecond =(endTimeStamp-startTimeStamp)/1000;
+        long day = 1000*60*60*24;
+        long intervalSecond =(endTimeStamp-startTimeStamp)/(1000*60);
         for (int i = 0; i < intervalSecond; i++) {
+            if (DateTimeUtil.getStringTimeStamp(start, DateTimeUtil.DATETIMEFORMAT)+day<=startTimeStamp){
+                start=DateTimeUtil.timeStampTransformString(startTimeStamp,DateTimeUtil.DATETIMEFORMAT);
+            }
             DateTimeUtil.timeStampTransformString(startTimeStamp,DateTimeUtil.DATETIMEFORMAT);
             String s = DateTimeUtil.timeStampTransformString(startTimeStamp, DateTimeUtil.DATETIMEFORMAT);
-            Humidity humidity = new Humidity(0, getHumidity(startTimeStamp),s , "1234");
+            Humidity humidity = new Humidity(0, getHumidity(startTimeStamp,start.split(" ")[0]),s , "1234");
             humidityList.add(humidity);
-            startTimeStamp+=1000;
+            startTimeStamp+=1000*60;
         }
 //        for (int i = 0; i < n; i++) {
 //            double data = random.nextDouble();
@@ -158,14 +165,18 @@ public class CreateGasData {
     private List<Temperature> createTemperatureDataList(int n) {
         ArrayList<Temperature> temperatureList = new ArrayList<>();
         String now = DateTimeUtil.getNowFormatDateTimeString(DateTimeUtil.DATETIMEFORMAT);
-        String start = "2023-07-23 00:00:00";
+        String start = "2023-07-18 00:00:00";
         long startTimeStamp = DateTimeUtil.getStringTimeStamp(start, DateTimeUtil.DATETIMEFORMAT);
         long endTimeStamp = DateTimeUtil.getStringTimeStamp(now, DateTimeUtil.DATETIMEFORMAT);
-        long intervalSecond =(endTimeStamp-startTimeStamp)/1000;
+        long intervalSecond =(endTimeStamp-startTimeStamp)/(1000*60);
+        long day = 1000*60*60*24;
         for (int i = 0; i < intervalSecond; i++) {
-            double tempertureData = getTempertureData(startTimeStamp);
+            if (DateTimeUtil.getStringTimeStamp(start, DateTimeUtil.DATETIMEFORMAT)+day<=startTimeStamp){
+                start=DateTimeUtil.timeStampTransformString(startTimeStamp,DateTimeUtil.DATETIMEFORMAT);
+            }
+            double tempertureData = getTempertureData(startTimeStamp,start.split(" ")[0]);
             String s = DateTimeUtil.timeStampTransformString(startTimeStamp, DateTimeUtil.DATETIMEFORMAT);
-            startTimeStamp+=1000;
+            startTimeStamp+=1000*60;
             Temperature temperature = new Temperature(0, tempertureData, s, "1234");
             temperatureList.add(temperature);
         }
@@ -188,17 +199,17 @@ public class CreateGasData {
         long endTimeStamp = DateTimeUtil.getStringTimeStamp(now, DateTimeUtil.DATETIMEFORMAT);
         long intervalSecond =(endTimeStamp-startTimeStamp)/1000;
         for (int i = 0; i < intervalSecond; i++) {
-            getTempertureData(startTimeStamp);
+            getTempertureData(startTimeStamp,start);
             System.out.println(DateTimeUtil.timeStampTransformString(startTimeStamp,DateTimeUtil.DATETIMEFORMAT));
             startTimeStamp+=1000;
         }
 
     }
 
-    private double getHumidity(long m){
-        long _0 = DateTimeUtil.getStringTimeStamp("2023-07-23 00:00:00", DateTimeUtil.DATETIMEFORMAT);
-        long _8= DateTimeUtil.getStringTimeStamp("2023-07-23 08:00:00", DateTimeUtil.DATETIMEFORMAT);
-        long _22 = DateTimeUtil.getStringTimeStamp("2023-07-23 22:00:00", DateTimeUtil.DATETIMEFORMAT);
+    private double getHumidity(long m,String date){
+        long _0 = DateTimeUtil.getStringTimeStamp(date+" 00:00:00", DateTimeUtil.DATETIMEFORMAT);
+        long _8= DateTimeUtil.getStringTimeStamp(date+" 08:00:00", DateTimeUtil.DATETIMEFORMAT);
+        long _22 = DateTimeUtil.getStringTimeStamp(date+" 22:00:00", DateTimeUtil.DATETIMEFORMAT);
         double one_period_value = 0.95;
         double two_period_value = 0.6;
         Random random = new Random();
@@ -217,10 +228,10 @@ public class CreateGasData {
     }
 
 
-    private double getTempertureData(long m) {
-        long _0 = DateTimeUtil.getStringTimeStamp("2023-07-23 00:00:00", DateTimeUtil.DATETIMEFORMAT);
-        long _9= DateTimeUtil.getStringTimeStamp("2023-07-23 09:00:00", DateTimeUtil.DATETIMEFORMAT);
-        long _16 = DateTimeUtil.getStringTimeStamp("2023-07-23 16:00:00", DateTimeUtil.DATETIMEFORMAT);
+    private double getTempertureData(long m,String date) {
+        long _0 = DateTimeUtil.getStringTimeStamp(date+" 00:00:00", DateTimeUtil.DATETIMEFORMAT);
+        long _9= DateTimeUtil.getStringTimeStamp(date+" 09:00:00", DateTimeUtil.DATETIMEFORMAT);
+        long _16 = DateTimeUtil.getStringTimeStamp(date+" 16:00:00", DateTimeUtil.DATETIMEFORMAT);
         double one_period_value = 26;
         double two_period_value = 36;
         Random random = new Random();
